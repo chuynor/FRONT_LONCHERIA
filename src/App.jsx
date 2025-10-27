@@ -1,13 +1,10 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   return (
     <div>
-      <nav>
-        <Link to="/">Inicio</Link> | <Link to="/menu">Menú</Link> |{" "}
-        <Link to="/contacto">Contacto</Link>
-      </nav>
-      <hr />
+      <Navbar />
       <Outlet />
     </div>
   );

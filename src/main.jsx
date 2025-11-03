@@ -7,7 +7,8 @@ import App from "./App.jsx";
 import Home from "./pages/Home.jsx";
 import Menu from "./pages/Menu.jsx";
 import Contacto from "./pages/Contacto.jsx";
-import Login from "./pages/login.jsx";
+import Login from "./components/Login.jsx";
+import Register from "./components/Register.jsx";
 import "./index.css";
 import Cart from "./pages/Cart.jsx";
 
@@ -19,6 +20,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="menu" element={<Menu />} />
         <Route path="contacto" element={<Contacto />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
         <Route path="cart" element={<Cart />} />
       </Route>
     </Routes>

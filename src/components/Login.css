@@ -1,0 +1,87 @@
+.login-page {
+  display: flex;
+  height: 100vh;
+  background: #fff;
+}
+
+.login-left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #efefef;
+}
+
+.login-image {
+  width: 65%;
+}
+
+.login-right {
+  flex: 1;
+  padding: 80px 60px;
+}
+
+.login-right h2 {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.login-right p {
+  color: #777;
+  margin-bottom: 35px;
+}
+
+.form-login label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: block;
+  color: #444;
+}
+
+.form-login input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 25px;
+  outline: none;
+  background: transparent;
+}
+
+.forgot {
+  font-size: 12px;
+  color: #777;
+  display: block;
+  margin-bottom: 25px;
+}
+
+.btn-login,
+.btn-register {
+  width: 140px;
+  padding: 10px;
+  border-radius: 25px;
+  border: none;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.btn-login {
+  background-color: #4a8d35;
+  color: #f3f1e4;
+}
+
+.btn-register {
+  background-color: #f3f1e4;
+  color: #4a8d35;
+}
+/* Ocultar placeholder al escribir */
+input:focus::placeholder {
+  color: transparent;
+}
+
+/* Para que el texto del input sea visible */
+input {
+  color: #333;
+  font-size: 15px;
+}

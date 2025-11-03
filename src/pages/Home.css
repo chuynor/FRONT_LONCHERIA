@@ -1,0 +1,229 @@
+/* 🔹 Contenedor principal */
+.home-container {
+  font-family: "Poppins", sans-serif;
+  background-color: #ffffff;
+  color: #3d2a14;
+  padding: 20px;
+}
+
+/* 🔹 Sección superior */
+.home-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 🔹 Card de pedido con imagen y texto encima */
+.pedido-card {
+  position: relative; /* Necesario para overlay */
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 30px auto;
+}
+
+.top-img {
+  width: 80%;
+  max-width: 693px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.pedido-overlay {
+  position: absolute;
+  top: 50%; /* Centrado vertical */
+  left: 40%; /* Centrado horizontal */
+  transform: translate(-50%, -50%); /* Ajusta al centro exacto */
+  text-align: left;
+  color: #3d2a14; /* Color del texto */
+}
+
+.pedido-overlay h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.pedido-options {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.option {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.option.tienda {
+  background-color: #4a8d35;
+  color: #fff;
+}
+
+.option.domicilio {
+  background-color: #f3f1e4;
+  color: #3d2a14;
+}
+
+.option:hover {
+  transform: scale(1.05);
+}
+
+/* 🔹 Logo */
+.logo-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-logo {
+  width: 487.66px;
+  height: 487.66px;
+  object-fit: contain;
+  margin-left: 20px; /* Mueve el logo 20 px a la izquierda */
+}
+
+/* 🔹 Imagen del pan y frase (mitad y mitad) */
+.home-mid {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  width: 100%;
+  background-color: #f8f3ea;
+}
+
+/* Mitad izquierda: imagen del pan */
+.home-mid-left {
+  flex: 1;
+}
+
+.pan-image {
+  width: 100%;
+  height: 100%;
+  max-height: 643px;
+  object-fit: cover;
+}
+
+/* Mitad derecha: frase */
+.home-mid-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f3ea;
+  padding: 20px;
+}
+
+.frase {
+  font-style: italic;
+  font-size: 1.5rem;
+  color: #3d2a14;
+  text-align: center;
+  max-width: 300px;
+}
+
+/* 🔹 Sección inferior */
+.home-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 50px 0;
+}
+
+.slogan {
+  position: relative;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  text-align: left;
+}
+
+.slogan-img {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.slogan h1 {
+  position: absolute;
+  color: #fff;
+  font-size: 3rem;
+  line-height: 1.5;
+  padding: 30px;
+}
+
+.bottom-right {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 15px;
+}
+
+.food-img {
+  width: 434px;
+  border-radius: 50%;
+}
+
+.order-btn {
+  background-color: #4a8d35;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.order-btn:hover {
+  background-color: #3c742b;
+  transform: scale(1.05);
+}
+
+/* 📱 Responsive */
+@media (max-width: 1024px) {
+  .home-logo {
+    width: 300px;
+    height: 300px;
+  }
+
+  .home-mid {
+    flex-direction: column;
+  }
+
+  .pan-image {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .frase {
+    font-size: 1.2rem;
+  }
+
+  .pedido-overlay h2 {
+    font-size: 1.5rem;
+  }
+
+  .pedido-options {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

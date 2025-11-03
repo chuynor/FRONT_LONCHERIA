@@ -11,18 +11,21 @@ import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import "./index.css";
 import Cart from "./pages/Cart.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<App />}>
-        <Route index element={<Home />} />
-        <Route path="menu" element={<Menu />} />
-        <Route path="contacto" element={<Contacto />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="cart" element={<Cart />} />
-      </Route>
-    </Routes>
-  </BrowserRouter>
+  <CartProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route index element={<Home />} />
+          <Route path="menu" element={<Menu />} />
+          <Route path="contacto" element={<Contacto />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="cart" element={<Cart />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  </CartProvider>
 );

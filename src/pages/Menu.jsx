@@ -34,14 +34,7 @@ const Menu = () => {
       {/* Cards grid */}
       <div className="menu-grid">
         {filteredItems.length > 0 ? (
-          filteredItems.map((item) => (
-            <Card
-              key={item.id}
-              name={item.name}
-              price={item.price}
-              image={item.image}
-            />
-          ))
+          filteredItems.map((item) => <Card key={item.id} item={item} />)
         ) : (
           <p className="empty-text">
             No hay productos en esta categoría todavía ☕

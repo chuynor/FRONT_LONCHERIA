@@ -34,12 +34,12 @@
   left: 0;
   height: 2px;
   width: 0%;
-  background-color: #e5983e;
+  background-color: #85ab87;
   transition: width 0.3s ease;
 }
 
 .category-btn:hover {
-  color: #e5983e;
+  color: #85ab87;
 }
 
 .category-btn:hover::after {
@@ -47,7 +47,7 @@
 }
 
 .category-btn.active {
-  color: #e5983e;
+  color: #85ab87;
 }
 
 .category-btn.active::after {

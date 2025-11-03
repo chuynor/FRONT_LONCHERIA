@@ -1,0 +1,136 @@
+.contacto-container {
+  font-family: "Poppins", sans-serif;
+  color: #3d2a14;
+  background-color: #ffffff;
+  padding: 40px;
+}
+
+/* 🔹 Sucursal */
+.sucursal-section {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.sucursal-left img {
+  width: 450px;
+  height: auto;
+  border-radius: 12px;
+}
+
+.sucursal-right {
+  flex: 1;
+}
+
+/* 🔹 Historia */
+.historia-section {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.historia-img {
+  width: 450px;
+  border-radius: 12px;
+}
+
+/* 🔹 Quiénes somos */
+.quienes-section {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.quienes-logo {
+  width: 400px;
+  height: auto;
+}
+
+.quienes-right {
+  flex: 1;
+}
+
+/* 🔹 Visión, Misión, Valores */
+.vmv-section {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  margin-top: 40px;
+  gap: 20px;
+}
+
+.vmv-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.vmv-card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.vmv-card button {
+  background-color: #4a8d35;
+  color: #000000;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.vmv-card button:hover {
+  background-color: #f3f1e4;
+}
+
+.vmv-text {
+  margin-top: 15px;
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  color: #3d2a14;
+  font-size: 0.95rem;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.vmv-text li {
+  list-style: inside;
+  margin-bottom: 5px;
+}
+.vmv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.vmv-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.vmv-header button {
+  background-color: #4a8d35;
+  color: #000000;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.vmv-header button:hover {
+  background-color: #f3f1e4;
+}

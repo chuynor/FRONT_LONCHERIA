@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="home-container">
       {/* 🔹 Sección superior */}
@@ -17,6 +20,7 @@ const Home = () => {
           </div>
         </div>
 
+        {/* 🔹 Logo central */}
         <div className="logo-section">
           <img src="/src/assets/logo.png" alt="Logo" className="home-logo" />
         </div>
@@ -51,7 +55,24 @@ const Home = () => {
             alt="Desayuno"
             className="food-img"
           />
-          <button className="order-btn">Pedir Ahora</button>
+          <button className="order-btn" onClick={() => navigate("/menu")}>
+            Pedir Ahora
+          </button>
+        </div>
+      </section>
+
+      {/* 🔹 Sección Noticias y Promociones */}
+      <section className="news-section">
+        <div className="news-card noticias">
+          <h2>NOTICIAS MIGAJAS</h2>
+          <p>Consulta los eventos más recientes.</p>
+          <button className="news-btn">VER MÁS</button>
+        </div>
+
+        <div className="news-card promociones">
+          <h2>PROMOCIONES MIGAJAS</h2>
+          <p>Términos y condiciones.</p>
+          <button className="news-btn">VER MÁS</button>
         </div>
       </section>
     </div>

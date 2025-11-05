@@ -73,3 +73,96 @@
   color: black; /* forma del carrito negra */
   font-size: 22px; /* ajusta tamaño si es necesario */
 }
+/* 🔹 Contenedor del perfil */
+.profile-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* 🔹 Círculo del perfil */
+.profile-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #4a8d35;
+  transition: transform 0.2s ease;
+}
+
+.profile-circle:hover {
+  transform: scale(1.05);
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 🔹 Menú desplegable */
+.dropdown-menu {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  overflow: hidden;
+  z-index: 10;
+  animation: fadeIn 0.25s ease;
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #3d2a14;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f3f1e4;
+  color: #4a8d35;
+}
+
+/* 🔹 Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🔹 Responsivo */
+@media (max-width: 768px) {
+  .navbar-right {
+    gap: 0.6rem;
+  }
+
+  .profile-circle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .dropdown-menu {
+    right: -20px;
+    min-width: 140px;
+  }
+
+  .dropdown-menu button {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+}

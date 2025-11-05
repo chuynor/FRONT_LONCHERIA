@@ -1,6 +1,8 @@
 /* 🔹 Contenedor principal */
+@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
+
 .home-container {
-  font-family: "Poppins", sans-serif;
+  font-family: "Itim", cursive;
   background-color: #ffffff;
   color: #3d2a14;
   padding: 20px;
@@ -40,7 +42,8 @@
 }
 
 .pedido-overlay h2 {
-  font-size: 2rem;
+  text-align: center;
+  font-size: 4rem;
   margin-bottom: 15px;
 }
 
@@ -147,9 +150,9 @@
 }
 
 .slogan-img {
-  width: 100%;
-  max-width: 800px;
-  height: auto;
+  width: 899px;
+
+  height: 782px;
   object-fit: cover;
   border-radius: 12px;
 }
@@ -157,7 +160,7 @@
 .slogan h1 {
   position: absolute;
   color: #fff;
-  font-size: 3rem;
+  font-size: 7rem;
   line-height: 1.5;
   padding: 30px;
 }
@@ -166,23 +169,31 @@
   display: flex;
   flex-direction: column;
   align-items: left;
-  gap: 15px;
+  gap: 240px;
+  align-items: center; /* centra horizontalmente */
+  justify-content: center;
 }
 
 .food-img {
-  width: 434px;
+  width: 450px;
   border-radius: 50%;
 }
 
 .order-btn {
   background-color: #4a8d35;
   color: #fff;
-  padding: 8px 18px;
+  width: 396px; /* ancho fijo */
+  height: 109px; /* alto fijo */
   border-radius: 25px;
   border: none;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600; /* más gruesa */
+  font-size: 3rem; /* letra más grande */
   transition: 0.3s;
+  font-family: "Itim", cursive; /* combina con el resto del Home */
+  display: flex; /* centra el texto */
+  align-items: center; /* centra verticalmente */
+  justify-content: center; /* centra horizontalmente */
 }
 
 .order-btn:hover {
@@ -228,65 +239,79 @@
   }
 }
 
-/* 🔹 Sección Promociones */
-.promociones {
+/* 🔹 Sección Noticias y Promociones */
+.news-section {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 40px;
-  margin: 60px 0;
-  flex-wrap: wrap;
+  gap: 50px;
+  margin: 80px 0;
 }
 
-/* 🔹 Cuadros grandes */
-.promo-box {
-  width: 350px;
-  height: 350px;
-  background-color: #4a8d35;
-  color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.2);
+/* 🔸 Cuadros fijos de 631x631 px */
+.news-card {
+  width: 631px;
+  height: 631px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  padding: 30px 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.promo-box:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+.news-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* 🔹 Título */
-.promo-box h2 {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
-  font-weight: 700;
-}
-
-/* 🔹 Texto */
-.promo-box p {
-  font-size: 1rem;
-  line-height: 1.5;
+.news-card h2 {
+  font-size: 1.9rem;
   margin-bottom: 25px;
+  letter-spacing: 1px;
 }
 
-/* 🔹 Botón */
-.promo-box button {
-  background-color: #faf6ed;
-  color: #3d2a14;
+.news-card p {
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+}
+
+/* 🔹 Colores */
+.news-card.noticias {
+  background-color: #faf6ed; /* beige */
+  color: #2e6b3e;
+}
+
+.news-card.promociones {
+  background-color: #2e6b3e; /* verde */
+  color: #fffbea;
+}
+
+/* 🔘 Botón "VER MÁS" */
+.news-btn {
+  background-color: #2e6b3e;
+  color: #fff;
   border: none;
+  padding: 12px 28px;
   border-radius: 25px;
-  padding: 12px 25px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  align-self: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.promo-box button:hover {
-  background-color: #3d2a14;
-  color: #fff;
+.news-card.noticias .news-btn {
+  background-color: #2e6b3e;
+  color: #fffbea;
+}
+
+.news-card.promociones .news-btn {
+  background-color: #fffbea;
+  color: #2e6b3e;
+}
+
+.news-btn:hover {
+  transform: scale(1.05);
 }

@@ -4,85 +4,117 @@ import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
-
-  // 🔹 Estados para los campos
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // 🔹 Validación simple de email y password
-  const isFormValid = email.trim() !== "" && password.trim() !== "";
+  // 🔹 Token de aplicación
+  const APP_TOKEN =
+    "bjwcgwudjwnwlcjowciw.bcjgcgjcbwchbwcwlcbkwbckwcbwbkwbcwkcb95855nkwhdcwg";
 
-  // 🔹 Iniciar sesión solo si es válido
-  const handleLogin = (e) => {
+  // 🔹 Enviar datos al servidor
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setMensaje("");
+    setLoading(true);
 
-    if (!isFormValid) return; // evita avanzar si está vacío
+    try {
+      const response = await fetch(
+        "https://api.solomigajas.online/api/usuarios/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-app-token": APP_TOKEN,
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
-    // Aquí podrías agregar validaciones reales con backend
-    navigate("/"); // 🔹 redirige al Home
-  };
+      const data = await response.json();
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    navigate("/register"); // 🔹 redirige al Register
+      if (response.ok) {
+        setMensaje("✅ Inicio de sesión exitoso");
+
+        // Guardar token y usuario
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("usuario", JSON.stringify(data.usuario));
+
+        // Redirigir a Home.jsx (ruta "/")
+        setTimeout(() => navigate("/"), 1500);
+      } else {
+        setMensaje(data.mensaje || "❌ Credenciales incorrectas");
+      }
+    } catch (error) {
+      console.error("Error de conexión:", error);
+      setMensaje("🚫 No se pudo conectar con el servidor.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login-page">
-      {/* 🔹 Sección izquierda con imagen */}
+      {/* 🔹 Lado izquierdo con imagen */}
       <div className="login-left">
-        <img
-          src="/src/assets/Login.png"
-          alt="Illustration"
-          className="login-image"
-        />
+        <img src="/src/assets/Login.png" alt="Login" className="login-image" />
       </div>
 
-      {/* 🔹 Sección derecha con formulario */}
+      {/* 🔹 Lado derecho con formulario */}
       <div className="login-right">
-        <h2>
-          Te damos la Bienvenida
-          <br /> a Solo Migajas
-        </h2>
-        <p>
-          Inicia sesión <br /> y disfruta la experiencia
-        </p>
+        <h2>Iniciar Sesión</h2>
+        <p>Accede a tu cuenta para continuar</p>
 
         <form className="form-login" onSubmit={handleLogin}>
-          <label>Correo electrónico</label>
+          <label htmlFor="email">Correo electrónico</label>
           <input
             type="email"
-            placeholder="Email"
+            id="email"
+            placeholder="Ej: usuario@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <label>Contraseña</label>
+          <label htmlFor="password">Contraseña</label>
           <input
             type="password"
-            placeholder="********"
+            id="password"
+            placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
 
           <a href="#" className="forgot">
-            Olvidé mi contraseña
+            ¿Olvidaste tu contraseña?
           </a>
 
-          <button
-            className="btn-login"
-            type="submit"
-            disabled={!isFormValid} // 🔹 Desactiva si no está completo
-          >
-            Iniciar Sesión
-          </button>
-
-          <button className="btn-register" onClick={handleRegister}>
-            Registrar
-          </button>
+          <div>
+            <button type="submit" className="btn-login" disabled={loading}>
+              {loading ? "Conectando..." : "Ingresar"}
+            </button>
+            <button
+              type="button"
+              className="btn-register"
+              onClick={() => navigate("/register")}
+            >
+              Registrarse
+            </button>
+          </div>
         </form>
+
+        {mensaje && (
+          <p
+            style={{
+              marginTop: "15px",
+              color: mensaje.includes("✅") ? "#4a8d35" : "#d9534f",
+            }}
+          >
+            {mensaje}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -8,63 +8,56 @@
   padding: 20px;
 }
 
-/* 🔹 Sección superior */
+/* 🔹 Nueva versión moderna del home-top */
+/* 🔹 Sección superior con imagen de fondo */
 .home-top {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  border-radius: 25px;
+  margin-bottom: 60px;
+  padding: 60px 20px;
+  overflow: hidden; /* evita que se salga la imagen */
+}
+
+/* Imagen de fondo oscurecida */
+.home-top::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url("/src/assets/fondo.webp") center/cover no-repeat;
+  filter: brightness(0.8);
+  z-index: 1;
+  border-radius: 25px;
+}
+
+/* Contenido por encima del fondo */
+.pedido-container {
+  position: relative;
+  z-index: 2; /* asegura que el contenido esté sobre la imagen */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-}
-
-/* 🔹 Card de pedido con imagen y texto encima */
-.pedido-card {
-  position: relative; /* Necesario para overlay */
+  max-width: 1200px;
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto 30px auto;
+  flex-wrap: wrap;
+  gap: 40px;
+  color: #fff; /* texto blanco sobre el fondo oscuro */
 }
 
-.top-img {
-  width: 80%;
-  max-width: 693px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-.pedido-overlay {
-  position: absolute;
-  top: 50%; /* Centrado vertical */
-  left: 40%; /* Centrado horizontal */
-  transform: translate(-50%, -50%); /* Ajusta al centro exacto */
-  text-align: left;
-  color: #3d2a14; /* Color del texto */
-}
-
-.pedido-overlay h2 {
-  text-align: center;
-  font-size: 4rem;
-  margin-bottom: 15px;
-}
-
-.pedido-options {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.option {
-  border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: 0.3s;
+/* Resto igual que antes */
+.pedido-text h2 {
+  font-size: 3.5rem;
+  margin-bottom: 25px;
 }
 
 .option.tienda {
   background-color: #4a8d35;
   color: #fff;
+  box-shadow: 0 4px 10px rgba(74, 141, 53, 0.3);
 }
 
 .option.domicilio {
@@ -72,22 +65,31 @@
   color: #3d2a14;
 }
 
-.option:hover {
-  transform: scale(1.05);
-}
-
-/* 🔹 Logo */
-.logo-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .home-logo {
-  width: 487.66px;
-  height: 487.66px;
-  object-fit: contain;
-  margin-left: 20px; /* Mueve el logo 20 px a la izquierda */
+  width: 380px;
+  height: auto;
+  filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.home-logo:hover {
+  transform: rotate(-2deg) scale(1.05);
+}
+
+/* 📱 Responsivo */
+@media (max-width: 900px) {
+  .pedido-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .home-logo {
+    width: 280px;
+  }
+
+  .pedido-text h2 {
+    font-size: 2.2rem;
+  }
 }
 
 /* 🔹 Imagen del pan y frase (mitad y mitad) */
@@ -126,74 +128,108 @@
 
 .frase {
   font-style: italic;
-  font-size: 1.5rem;
+  font-size: 4rem;
   color: #3d2a14;
   text-align: center;
   max-width: 300px;
 }
 
 /* 🔹 Sección inferior */
+/* 🔹 Sección inferior */
+/* 🔹 Sección inferior */
 .home-bottom {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  border-radius: 25px;
+  margin-bottom: 80px;
+  overflow: hidden;
+}
+
+/* Contenedor principal igual que el de home-top */
+.bottom-container {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1200px;
+  width: 100%;
   flex-wrap: wrap;
-  margin: 50px 0;
+}
+
+/* Lado izquierdo */
+.bottom-left {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .slogan {
   position: relative;
   display: flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
-  text-align: left;
 }
 
 .slogan-img {
-  width: 899px;
-
-  height: 782px;
+  width: 700px;
+  height: auto;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 20px;
 }
 
 .slogan h1 {
   position: absolute;
   color: #fff;
-  font-size: 7rem;
-  line-height: 1.5;
+  font-size: 5.5rem;
+  line-height: 1.3;
   padding: 30px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
 
+/* Lado derecho */
 .bottom-right {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: left;
-  gap: 240px;
-  align-items: center; /* centra horizontalmente */
+  align-items: flex-end;
   justify-content: center;
 }
 
 .food-img {
-  width: 450px;
+  width: 420px;
+  height: auto;
   border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease;
 }
 
+.food-img:hover {
+  transform: scale(1.05);
+}
+
+/* Botón */
 .order-btn {
   background-color: #4a8d35;
   color: #fff;
-  width: 396px; /* ancho fijo */
-  height: 109px; /* alto fijo */
+  width: 340px;
+  height: 95px;
   border-radius: 25px;
   border: none;
   cursor: pointer;
-  font-weight: 600; /* más gruesa */
-  font-size: 3rem; /* letra más grande */
+  font-weight: 600;
+  font-size: 2.5rem;
   transition: 0.3s;
-  font-family: "Itim", cursive; /* combina con el resto del Home */
-  display: flex; /* centra el texto */
-  align-items: center; /* centra verticalmente */
-  justify-content: center; /* centra horizontalmente */
+  font-family: "Itim", cursive;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
 }
 
 .order-btn:hover {
@@ -201,41 +237,32 @@
   transform: scale(1.05);
 }
 
-/* 📱 Responsive */
+/* 📱 Responsivo */
 @media (max-width: 1024px) {
-  .home-logo {
-    width: 300px;
-    height: 300px;
-  }
-
-  .home-mid {
-    flex-direction: column;
-  }
-
-  .pan-image {
-    width: 100%;
-    height: auto;
-  }
-}
-
-@media (max-width: 768px) {
-  .home-bottom {
+  .bottom-container {
     flex-direction: column;
     text-align: center;
-    gap: 20px;
+    gap: 40px;
   }
 
-  .frase {
-    font-size: 1.2rem;
+  .bottom-left,
+  .bottom-right {
+    align-items: center;
+    justify-content: center;
   }
 
-  .pedido-overlay h2 {
-    font-size: 1.5rem;
+  .slogan h1 {
+    font-size: 3rem;
   }
 
-  .pedido-options {
-    flex-direction: column;
-    gap: 8px;
+  .food-img {
+    width: 300px;
+  }
+
+  .order-btn {
+    width: 280px;
+    height: 80px;
+    font-size: 2rem;
   }
 }
 

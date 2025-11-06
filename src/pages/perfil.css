@@ -1,0 +1,87 @@
+.perfil-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
+  background-color: #f3f1e4;
+  font-family: "Poppins", sans-serif;
+}
+
+.perfil-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 40px;
+  width: 400px;
+  text-align: center;
+}
+
+.perfil-foto {
+  position: relative;
+  display: inline-block;
+}
+
+.perfil-foto img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4a8d35;
+}
+
+.cambiar-foto {
+  display: inline-block;
+  background-color: #4a8d35;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.cambiar-foto input {
+  display: none;
+}
+
+.progreso-container {
+  background: #ddd;
+  border-radius: 10px;
+  height: 15px;
+  width: 100%;
+  margin: 15px 0;
+}
+
+.progreso-barra {
+  height: 100%;
+  background-color: #4a8d35;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.progreso-texto {
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.perfil-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.perfil-botones button {
+  background-color: #4a8d35;
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.perfil-botones button:hover {
+  background-color: #3b732c;
+}

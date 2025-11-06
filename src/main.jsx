@@ -12,6 +12,7 @@ import Register from "./components/Register.jsx";
 import "./index.css";
 import Cart from "./pages/Cart.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
+import Perfil from "./pages/Perfil.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <CartProvider>
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="perfil" element={<Perfil />} />
         </Route>
       </Routes>
     </BrowserRouter>

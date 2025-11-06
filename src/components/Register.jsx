@@ -16,7 +16,7 @@ function Register() {
   // 🔹 URL y Token de la API
   const API_URL = "https://api.solomigajas.online/api/usuarios/register";
   const APP_TOKEN =
-    "bjwcgwudjwnwlcjowciw.bcjgcgjcbwchbwcwlcbkwbckwcbwbkwbcwkcb95855nkwhdcwg";
+    "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsb25jaGVyaWEtc29sby1taWdhamFzIiwic3ViIjoiY2xpZW50ZS1maWVsLTAwMSIsImF1ZCI6ImFwaS5zb2xvbWlnYWphcy5teCIsImlhdCI6MTczMDc4MDgwMCwiZXhwIjoxNzMwNzg0NDAwLCJub21icmUiOiJNYXJcdTAwZWRhIExcdTAwZjNwZXoiLCJlbWFpbCI6Im1hcmlhQGVqZW1wbG8uY29tIiwicm9sIjoiY2xpZW50ZV92aXAiLCJsb25jaGVyaWEiOiJTb2xvIE1pZ2FqYXMgXHUwZjI4XHVkY2RkIiwicGVkaWRvX2ZhdiI6IlRvcnRhIGRlIG1pbGFuZXphIiwiZGVzY3VlbnRvIjoiMTUlIGVuIHRvZGFzIGxvcyBwbGF0aWxsb3MiLCJwdW50b3MiOjI1MH0.uW4XU5lC1q9y3f7k8p0LmN2xZ6vB9rTqYhG5jK3mN7o";
 
   // 🔹 Validaciones de contraseña
   const requirements = {

@@ -1,3 +1,4 @@
+// src/components/Card.jsx
 import React from "react";
 import "./Card.css";
 import { useCart } from "../context/CartContext";
@@ -8,15 +9,26 @@ function Card({ item }) {
   return (
     <div className="card">
       <div className="card-image-container">
-        <img className="card-image" src={item.image} alt={item.name} />
+        <img
+          className="card-image"
+          src={item.imagen || "/placeholder.jpg"}
+          alt={item.nombre}
+        />
       </div>
 
-      <h3 className="card-title">{item.name}</h3>
-      <p className="card-price">${item.price}</p>
+      <h3 className="card-title">{item.nombre}</h3>
+      <p className="card-description">{item.descripcion}</p>
+      <p className="card-price">${item.precio}</p>
 
-      <button className="card-btn" onClick={() => addToCart(item)}>
-        Agregar
-      </button>
+      {item.disponible ? (
+        <button className="card-btn" onClick={() => addToCart(item)}>
+          Agregar
+        </button>
+      ) : (
+        <button className="card-btn disabled" disabled>
+          No disponible
+        </button>
+      )}
     </div>
   );
 }

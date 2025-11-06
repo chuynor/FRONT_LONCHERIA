@@ -1,22 +1,41 @@
-import React, { useState } from "react";
+// src/pages/Menu.jsx
+import React, { useState, useEffect } from "react";
 import Card from "../components/Card";
-import { menuItems } from "../data/menuData";
+import { getProducts } from "../api/products";
 import "./Menu.css";
 
 const Menu = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Tortas");
+  const [selectedCategory, setSelectedCategory] = useState("jugos");
+  const [menuItems, setMenuItems] = useState([]); // ← Siempre empieza como array
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const categories = ["Tortas", "Desayunos", "Bebidas", "Postres"];
+  const categories = ["tortas", "quesadillas", "sandwiches", "chocos", "jugos"];
 
-  const filteredItems = menuItems.filter(
-    (item) => item.category === selectedCategory
+  useEffect(() => {
+    getProducts()
+      .then((productos) => {
+        setMenuItems(productos || []); // ← Protección extra
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  // LÍNEA MÁGICA: evita el crash aunque menuItems sea null/undefined
+  const filteredItems = (menuItems || []).filter(
+    (item) => item?.categoria?.toLowerCase() === selectedCategory
   );
+
+  if (loading) return <p className="loading">Cargando menú... 🥤</p>;
+  if (error) return <p className="error">⚠️ {error}</p>;
 
   return (
     <div className="menu-page">
-      <h2 className="menu-title">Menú</h2>
+      <h2 className="menu-title">Menú del Día</h2>
 
-      {/* Category bar */}
       <div className="category-bar">
         {categories.map((cat) => (
           <button
@@ -26,21 +45,42 @@ const Menu = () => {
             }`}
             onClick={() => setSelectedCategory(cat)}
           >
-            {cat}
+            {cat.charAt(0).toUpperCase() + cat.slice(1)}
           </button>
         ))}
       </div>
 
-      {/* Cards grid */}
       <div className="menu-grid">
         {filteredItems.length > 0 ? (
-          filteredItems.map((item) => <Card key={item.id} item={item} />)
+          filteredItems.map((item) => <Card key={item._id} item={item} />)
         ) : (
           <p className="empty-text">
-            No hay productos en esta categoría todavía ☕
+            No hay {selectedCategory} disponibles ahora 😋
           </p>
         )}
       </div>
+
+      {/* BOTÓN DE SALIDA RÁPIDA */}
+      <button
+        onClick={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+        }}
+        style={{
+          position: "fixed",
+          top: 10,
+          right: 10,
+          padding: "8px 12px",
+          background: "#d9534f",
+          color: "white",
+          border: "none",
+          borderRadius: 6,
+          cursor: "pointer",
+          zIndex: 9999,
+        }}
+      >
+        Salir
+      </button>
     </div>
   );
 };

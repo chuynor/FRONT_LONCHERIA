@@ -1,4 +1,3 @@
-// src/api/products.js
 export async function getProducts() {
   const API_URL = import.meta.env.VITE_API_URL; // https://api.solomigajas.online
   const APP_TOKEN = import.meta.env.VITE_APP_TOKEN;

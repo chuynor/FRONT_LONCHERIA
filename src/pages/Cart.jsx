@@ -1,47 +1,58 @@
+// src/components/Cart.jsx
 import React from "react";
-import { useCart } from "../context/CartContext";
 import "./Cart.css";
+import { useCart } from "../context/CartContext";
 
 export default function Cart() {
-  const { cart, addToCart, removeFromCart } = useCart();
-
-  // Calcular total
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * (item.qty || 1),
-    0
-  );
+  const { cart, increaseQty, decreaseQty, removeFromCart, total } = useCart();
 
   return (
     <div className="cart-container">
       <h2 className="cart-title">Tu Carrito</h2>
 
-      <div className="cart-items">
-        {cart.length === 0 ? (
-          <p>Tu carrito está vacío 😔</p>
-        ) : (
-          cart.map((item, index) => (
-            <div className="cart-item" key={index}>
-              <img src={item.image} alt={item.name} className="cart-item-img" />
+      {cart.length === 0 ? (
+        <p className="cart-empty">Tu carrito está vacío 🛒</p>
+      ) : (
+        <div>
+          {cart.map((item) => (
+            <div className="cart-item" key={item.id}>
+              <img src={item.imagen} alt={item.nombre} className="cart-img" />
 
-              <div className="cart-item-info">
-                <h4>{item.name}</h4>
-                <p>${item.price}</p>
-              </div>
+              <div className="cart-info">
+                <h3>{item.nombre}</h3>
+                <p>${item.precio}</p>
 
-              <div className="cart-item-controls">
-                <button onClick={() => removeFromCart(item.id)}>-</button>
-                <span>{item.qty || 1}</span>
-                <button onClick={() => addToCart(item)}>+</button>
+                <div className="cart-controls">
+                  <button
+                    className="qty-btn"
+                    onClick={() => decreaseQty(item.id)}
+                  >
+                    -
+                  </button>
+
+                  <span className="cart-qty">{item.quantity}</span>
+
+                  <button
+                    className="qty-btn"
+                    onClick={() => increaseQty(item.id)}
+                  >
+                    +
+                  </button>
+                </div>
+
+                <button
+                  className="remove-btn"
+                  onClick={() => removeFromCart(item.id)}
+                >
+                  Quitar
+                </button>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
 
-      {cart.length > 0 && (
-        <div className="cart-summary">
-          <h3>Total: ${total}</h3>
-          <button className="checkout-btn">Proceder al Pago</button>
+          <div className="cart-total">
+            <h3>Total: ${total}</h3>
+          </div>
         </div>
       )}
     </div>

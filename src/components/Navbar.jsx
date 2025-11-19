@@ -11,6 +11,8 @@ const Navbar = () => {
 
   // 🔹 Verifica si el usuario está logueado
   const isLoggedIn = !!localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const isAdmin = role === "admin";
 
   // Mapeo de rutas a títulos
   const pageTitles = {
@@ -58,6 +60,9 @@ const Navbar = () => {
         </Link>
         <Link to="/contacto" className="nav-link">
           Contacto
+        </Link>
+        <Link to="/admin" className="nav-link">
+          Admin
         </Link>
 
         <button className="cart-btn" onClick={() => navigate("/cart")}>

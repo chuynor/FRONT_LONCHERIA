@@ -13,6 +13,7 @@ import "./index.css";
 import Cart from "./pages/Cart.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import Perfil from "./pages/Perfil.jsx";
+import AdminDashboard from "./pages/AdminDashboard";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <CartProvider>
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="register" element={<Register />} />
           <Route path="cart" element={<Cart />} />
           <Route path="perfil" element={<Perfil />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

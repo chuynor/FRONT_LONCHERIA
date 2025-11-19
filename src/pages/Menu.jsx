@@ -6,7 +6,7 @@ import "./Menu.css";
 
 const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState("jugos");
-  const [menuItems, setMenuItems] = useState([]); // ← Siempre empieza como array
+  const [menuItems, setMenuItems] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -15,7 +15,7 @@ const Menu = () => {
   useEffect(() => {
     getProducts()
       .then((productos) => {
-        setMenuItems(productos || []); // ← Protección extra
+        setMenuItems(productos || []); 
         setLoading(false);
       })
       .catch((err) => {
@@ -24,13 +24,12 @@ const Menu = () => {
       });
   }, []);
 
-  // LÍNEA MÁGICA: evita el crash aunque menuItems sea null/undefined
   const filteredItems = (menuItems || []).filter(
     (item) => item?.categoria?.toLowerCase() === selectedCategory
   );
 
-  if (loading) return <p className="loading">Cargando menú... 🥤</p>;
-  if (error) return <p className="error">⚠️ {error}</p>;
+  if (loading) return <p className="loading">Cargando menú... </p>;
+  if (error) return <p className="error"> {error}</p>;
 
   return (
     <div className="menu-page">

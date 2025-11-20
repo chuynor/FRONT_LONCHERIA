@@ -7,7 +7,7 @@ export default function Perfil() {
   const [user, setUser] = useState({
     nombre: "Usuario",
     email: "usuario@correo.com",
-    foto: "/src/assets/userr.png",
+    foto: "/src/assets/perfil.jpg",
     pedidos: 0,
   });
 
@@ -19,7 +19,9 @@ export default function Perfil() {
     const archivo = e.target.files[0];
     if (archivo) {
       const url = URL.createObjectURL(archivo);
-      setUser({ ...user, foto: url });
+      const nuevoUser = { ...user, foto: url };
+      setUser(nuevoUser);
+      localStorage.setItem("userData", JSON.stringify(nuevoUser));
     }
   };
 
@@ -29,7 +31,7 @@ export default function Perfil() {
     navigate("/login");
   };
 
-  // 🔹 Simular obtener datos de usuario (puedes conectar con tu backend)
+  // 🔹 Obtener datos de usuario de localStorage
   useEffect(() => {
     const datosGuardados = JSON.parse(localStorage.getItem("userData"));
     if (datosGuardados) setUser(datosGuardados);

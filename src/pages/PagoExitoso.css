@@ -1,0 +1,30 @@
+.success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.success-img {
+  width: 200px;
+  margin-bottom: 20px;
+}
+
+h3 {
+  margin-bottom: 30px;
+}
+
+.btn-menu {
+  background-color: #2e7d32;
+  color: white;
+  padding: 15px 40px;
+  border-radius: 40px;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.btn-menu:hover {
+  background-color: #256428;
+}

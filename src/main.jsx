@@ -14,6 +14,8 @@ import Cart from "./pages/Cart.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import Perfil from "./pages/Perfil.jsx";
 import AdminDashboard from "./pages/AdminDashboard";
+import PaymentPage from "./pages/PaymentPage";
+import PagoExitoso from "./pages/PagoExitoso";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <CartProvider>
@@ -28,6 +30,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="cart" element={<Cart />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/pago" element={<PaymentPage />} />
+          <Route path="/pago-exitoso" element={<PagoExitoso />} />
         </Route>
       </Routes>
     </BrowserRouter>

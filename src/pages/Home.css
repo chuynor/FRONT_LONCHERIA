@@ -137,132 +137,86 @@
 /* 🔹 Sección inferior */
 /* 🔹 Sección inferior */
 /* 🔹 Sección inferior */
+/* 🔹 Contenedor del bloque inferior */
 .home-bottom {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 85vh;
+  min-height: 70vh;
   border-radius: 25px;
   margin-bottom: 80px;
   overflow: hidden;
 }
 
-/* Contenedor principal igual que el de home-top */
+/* 🔹 Contenedor principal (solo derecha) */
 .bottom-container {
   position: relative;
   z-index: 2;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  max-width: 1200px;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-/* Lado izquierdo */
-.bottom-left {
-  flex: 1;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.slogan {
-  position: relative;
-  display: flex;
   justify-content: center;
-  align-items: center;
+  width: 100%;
+  gap: 40px;
 }
 
-.slogan-img {
-  width: 700px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 20px;
-}
-
-.slogan h1 {
-  position: absolute;
-  color: #fff;
-  font-size: 5.5rem;
-  line-height: 1.3;
-  padding: 30px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-/* Lado derecho */
+/* 🔥 DISEÑO NUEVO DEL LADO DERECHO (ÚNICO ACTIVO) */
 .bottom-right {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
+  gap: 30px;
+  padding: 20px;
 }
 
+/* Imagen moderna */
 .food-img {
-  width: 420px;
-  height: auto;
-  border-radius: 50%;
+  width: 360px;
+  height: 360px;
+  border-radius: 30px;
   object-fit: cover;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  transition: transform 0.3s ease;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 .food-img:hover {
-  transform: scale(1.05);
+  transform: scale(1.07);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
 }
 
 /* Botón */
 .order-btn {
-  background-color: #4a8d35;
+  background: linear-gradient(135deg, #4a8d35, #3a6f29);
   color: #fff;
-  width: 340px;
-  height: 95px;
-  border-radius: 25px;
+  width: 280px;
+  height: 80px;
+  border-radius: 18px;
   border: none;
   cursor: pointer;
+  font-size: 2.2rem;
   font-weight: 600;
-  font-size: 2.5rem;
-  transition: 0.3s;
   font-family: "Itim", cursive;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 50px;
+  box-shadow: 0 10px 25px rgba(58, 111, 41, 0.35);
+  transition: 0.35s ease;
 }
 
 .order-btn:hover {
-  background-color: #3c742b;
-  transform: scale(1.05);
+  transform: scale(1.05) translateY(-4px);
+  box-shadow: 0 15px 35px rgba(58, 111, 41, 0.45);
 }
 
 /* 📱 Responsivo */
-@media (max-width: 1024px) {
-  .bottom-container {
-    flex-direction: column;
-    text-align: center;
-    gap: 40px;
-  }
-
-  .bottom-left,
-  .bottom-right {
-    align-items: center;
-    justify-content: center;
-  }
-
-  .slogan h1 {
-    font-size: 3rem;
-  }
-
+@media (max-width: 768px) {
   .food-img {
-    width: 300px;
+    width: 260px;
+    height: 260px;
   }
 
   .order-btn {
-    width: 280px;
-    height: 80px;
-    font-size: 2rem;
+    width: 230px;
+    height: 70px;
+    font-size: 1.8rem;
   }
 }
 

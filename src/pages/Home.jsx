@@ -38,23 +38,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 🔹 Sección inferior (alineada como home-top) */}
+      {/* 🔹 Sección inferior (solo lado derecho moderno) */}
       <section className="home-bottom">
         <div className="bottom-container">
-          <div className="bottom-left">
-            <div className="slogan">
-              <img
-                src="/src/assets/Migajas.png"
-                alt="Decorativa"
-                className="slogan-img"
-              />
-              <h1>
-                SOLO DEJAS <br />
-                <span>MIGAJAS</span>
-              </h1>
-            </div>
-          </div>
-
           <div className="bottom-right">
             <img
               src="/src/assets/Desayuno.png"

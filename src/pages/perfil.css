@@ -1,87 +1,176 @@
+/* 🔹 Contenedor principal */
 .perfil-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 90vh;
-  background-color: #f3f1e4;
+  align-items: flex-start;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fefefe, #f3f1e4);
   font-family: "Poppins", sans-serif;
+  padding: 40px 20px;
 }
 
+/* 🔹 Tarjeta principal tipo glass */
 .perfil-card {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 40px;
-  width: 400px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  border-radius: 30px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  padding: 50px 30px;
+  width: 420px;
+  max-width: 95%;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.perfil-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* 🔹 Foto de perfil circular grande */
 .perfil-foto {
   position: relative;
   display: inline-block;
+  margin-bottom: 25px;
 }
 
 .perfil-foto img {
-  width: 140px;
-  height: 140px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #4a8d35;
+  border: 4px solid #4a8d35;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.perfil-foto img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .cambiar-foto {
   display: inline-block;
   background-color: #4a8d35;
   color: white;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  margin-top: 10px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  margin-top: 12px;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.cambiar-foto:hover {
+  background-color: #3b732c;
+  transform: scale(1.05);
 }
 
 .cambiar-foto input {
   display: none;
 }
 
+/* 🔹 Nombre y correo estilo “cabecera” */
+.perfil-card h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #3d2a14;
+  margin-bottom: 5px;
+}
+
+.perfil-card p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* 🔹 Tarjeta de progreso tipo social */
 .progreso-container {
-  background: #ddd;
-  border-radius: 10px;
-  height: 15px;
+  background: #e6e6e6;
+  border-radius: 25px;
+  height: 18px;
   width: 100%;
-  margin: 15px 0;
+  overflow: hidden;
+  margin-bottom: 10px;
+  position: relative;
 }
 
 .progreso-barra {
   height: 100%;
-  background-color: #4a8d35;
-  border-radius: 10px;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, #4a8d35, #74b04f);
+  border-radius: 25px;
+  width: 0;
+  transition: width 0.8s ease-in-out;
 }
 
 .progreso-texto {
   font-size: 0.9rem;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-weight: 500;
 }
 
+/* 🔹 Botones estilo red social */
 .perfil-botones {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
 .perfil-botones button {
   background-color: #4a8d35;
-  color: white;
+  color: #fff;
   border: none;
-  padding: 10px 0;
-  border-radius: 25px;
-  font-size: 1rem;
+  padding: 14px 0;
+  border-radius: 35px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .perfil-botones button:hover {
   background-color: #3b732c;
+  transform: translateY(-3px) scale(1.02);
+}
+
+/* 🔹 Información de pedidos estilo tarjetas pequeñas */
+.pedidos-info {
+  background: #f7f7f7;
+  border-radius: 20px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  color: #333;
+}
+
+/* 🔹 Responsivo */
+@media (max-width: 500px) {
+  .perfil-card {
+    padding: 40px 20px;
+  }
+
+  .perfil-foto img {
+    width: 130px;
+    height: 130px;
+  }
+
+  .perfil-card h2 {
+    font-size: 1.8rem;
+  }
+
+  .perfil-card p {
+    font-size: 0.9rem;
+  }
+
+  .progreso-texto {
+    font-size: 0.85rem;
+  }
+
+  .perfil-botones button {
+    font-size: 1rem;
+    padding: 12px 0;
+  }
 }

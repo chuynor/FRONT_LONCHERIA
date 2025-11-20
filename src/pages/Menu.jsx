@@ -6,7 +6,7 @@ import "./Menu.css";
 
 const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState("jugos");
-  const [menuItems, setMenuItems] = useState([]); 
+  const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -15,7 +15,7 @@ const Menu = () => {
   useEffect(() => {
     getProducts()
       .then((productos) => {
-        setMenuItems(productos || []); 
+        setMenuItems(productos || []);
         setLoading(false);
       })
       .catch((err) => {

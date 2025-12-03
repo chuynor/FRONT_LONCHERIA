@@ -1,3 +1,4 @@
+// src/components/Navbar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
@@ -9,12 +10,10 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  // 🔹 Verifica si el usuario está logueado
-  const isLoggedIn = !!localStorage.getItem("token");
+  const isLoggedIn = !!localStorage.getItem("usuario");
   const role = localStorage.getItem("role");
   const isAdmin = role === "admin";
 
-  // Mapeo de rutas a títulos
   const pageTitles = {
     "/": "Inicio",
     "/menu": "Menú",
@@ -22,21 +21,25 @@ const Navbar = () => {
     "/login": "Login",
     "/register": "Registro",
     "/cart": "Carrito",
+    "/admin": "Administración",
   };
 
   const currentTitle = pageTitles[location.pathname] || "Página";
 
-  // 🔹 Cierra sesión
+  // --------------------
+  // CERRAR SESIÓN
+  // --------------------
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("role");
     navigate("/login");
-    setMenuOpen(false);
   };
 
-  // 🔹 Cerrar menú si se hace clic fuera
+  // Cerrar menú cuando clic fuera
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
       }
     };
@@ -47,7 +50,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <img src="/src/assets/logo.png" alt="Logo" className="navbar-logo" />
+        <img src="/src/assets/logo.png" className="navbar-logo" />
         <h1 className="navbar-title">{currentTitle}</h1>
       </div>
 
@@ -61,9 +64,15 @@ const Navbar = () => {
         <Link to="/contacto" className="nav-link">
           Contacto
         </Link>
-        <Link to="/admin" className="nav-link">
-          Admin
-        </Link>
+
+        {/* --------------------
+          BOTÓN ADMIN SOLO SI ES ADMIN
+        -------------------- */}
+        {isAdmin && (
+          <Link to="/admin" className="nav-link">
+            Admin
+          </Link>
+        )}
 
         <button className="cart-btn" onClick={() => navigate("/cart")}>
           <ShoppingCart size={22} />
@@ -80,25 +89,17 @@ const Navbar = () => {
           </>
         ) : (
           <div className="profile-menu" ref={menuRef}>
-            {/* 🔹 Icono circular del perfil */}
             <div
               className="profile-circle"
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              <img
-                src="/src/assets/userr.png"
-                alt="Perfil"
-                className="profile-img"
-              />
+              <img src="/src/assets/userr.png" className="profile-img" />
             </div>
 
-            {/* 🔹 Menú desplegable */}
             {menuOpen && (
               <div className="dropdown-menu">
-                <button onClick={() => navigate("/perfil")}>Ver perfil</button>
-                <button onClick={() => navigate("/compras")}>
-                  Mis compras
-                </button>
+                <button onClick={() => navigate("/perfil")}>Perfil</button>
+                <button onClick={() => navigate("/compras")}>Compras</button>
                 <button onClick={handleLogout}>Cerrar sesión</button>
               </div>
             )}

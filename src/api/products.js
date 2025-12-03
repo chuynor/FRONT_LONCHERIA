@@ -2,7 +2,7 @@ export async function getProducts() {
   const API_URL = import.meta.env.VITE_API_URL; // https://api.solomigajas.online
   const APP_TOKEN = import.meta.env.VITE_APP_TOKEN;
 
-  const userToken = localStorage.getItem("token");
+  const userToken = JSON.parse(localStorage.getItem("usuario")).token;
   if (!userToken) throw new Error("Inicia sesión");
 
   console.log(`${API_URL}/api/productos`);

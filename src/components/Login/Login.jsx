@@ -35,22 +35,23 @@ export default function Login() {
         setMensaje("❌ Credenciales incorrectas");
         setLoading(false);
         return;
+      }
+
+      // Guardar datos del usuario en localStorage
+      const userLocalStorage = {
+        id: data.usuario._id,
+        nombre: data.usuario.nombre,
+        email: data.usuario.email,
+        rol: data.usuario.rol,
+        token: data.token,
+      };
+      localStorage.setItem("usuario", JSON.stringify(userLocalStorage));
+
+      // Guardar rol para el Navbar/Admin
+      if (data.usuario.rol === "admin" || email === "admin@example.com") {
+        localStorage.setItem("role", "admin");
       } else {
-        const userLocalStorage = {
-          id: data.usuario._id,
-          nombre: data.usuario.nombre,
-          email: data.usuario.email,
-          rol: data.usuario.rol,
-          token: data.token,
-        };
-
-        localStorage.setItem("usuario", JSON.stringify(userLocalStorage));
-
-        if (email === "admin@example.com") {
-          localStorage.setItem("role", "admin");
-        } else {
-          localStorage.setItem("role", data.usuario.rol || "user");
-        }
+        localStorage.setItem("role", data.usuario.rol || "user");
       }
 
       setMensaje("✅ Inicio de sesión exitoso");

@@ -1,10 +1,12 @@
-// src/components/Cart.jsx
+// src/pages/Cart.jsx
 import React from "react";
 import "./Cart.css";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
   const { cart, increaseQty, decreaseQty, removeFromCart, total } = useCart();
+  const navigate = useNavigate();
 
   return (
     <div className="cart-container">
@@ -24,19 +26,19 @@ export default function Cart() {
 
                 <div className="cart-controls">
                   <button
-                    className="qty-btn"
+                    className="qty-btn qty-minus"
                     onClick={() => decreaseQty(item.id)}
                   >
-                    -
+                    &#8722;
                   </button>
 
                   <span className="cart-qty">{item.quantity}</span>
 
                   <button
-                    className="qty-btn"
+                    className="qty-btn qty-plus"
                     onClick={() => increaseQty(item.id)}
                   >
-                    +
+                    &#43;
                   </button>
                 </div>
 
@@ -53,6 +55,11 @@ export default function Cart() {
           <div className="cart-total">
             <h3>Total: ${total}</h3>
           </div>
+
+          {/* BOTÓN DE PAGO */}
+          <button className="btn-pay-now" onClick={() => navigate("/pago")}>
+            Proceder al Pago 💳
+          </button>
         </div>
       )}
     </div>

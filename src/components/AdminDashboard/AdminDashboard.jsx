@@ -155,6 +155,7 @@ export default function AdminDashboard() {
   };
 
   // ================== INGREDIENTES ==================
+  // Crear ingrediente
   const createIngrediente = async (e) => {
     e.preventDefault();
     if (!newIngrediente.nombre)
@@ -184,6 +185,7 @@ export default function AdminDashboard() {
         cantidad: 0,
         descripcion: "",
       });
+
       await fetchIngredientes();
       setError("");
     } catch (err) {
@@ -193,9 +195,11 @@ export default function AdminDashboard() {
     }
   };
 
+  // Recargar stock de un ingrediente
   const recargarStock = async (id) => {
     const cantidadStr = prompt("Cantidad a recargar (número positivo):", "1");
     if (cantidadStr === null) return;
+
     const cantidad = Number(cantidadStr);
     if (isNaN(cantidad) || cantidad <= 0) return alert("Cantidad inválida");
 
@@ -216,9 +220,11 @@ export default function AdminDashboard() {
     }
   };
 
+  // Eliminar ingrediente
   const deleteIngrediente = async (id) => {
     if (!window.confirm("¿Eliminar ingrediente? Esto puede afectar productos."))
       return;
+
     try {
       await apiFetch(`/api/ingredientes/${id}`, { method: "DELETE" }, true);
       await fetchIngredientes();

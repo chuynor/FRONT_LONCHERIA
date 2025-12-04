@@ -1,21 +1,33 @@
-// src/context/CartContext.jsx
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
+export const useCart = () => useContext(CartContext);
+
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const [tipoPedido, setTipoPedido] = useState(
+    localStorage.getItem("tipoPedido") || ""
+  );
 
-  // Agregar productos con cantidad
-  const addToCart = (item) => {
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(storedCart);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  const addToCart = (product) => {
     setCart((prev) => {
-      const exists = prev.find((p) => p.id === item.id);
+      const exists = prev.find((p) => p.id === product.id);
       if (exists) {
         return prev.map((p) =>
-          p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
+          p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
         );
       }
-      return [...prev, { ...item, quantity: 1 }];
+      return [...prev, { ...product, quantity: 1 }];
     });
   };
 
@@ -36,13 +48,13 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+    setCart((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // Total con 2 decimales
-  const total = cart
-    .reduce((sum, item) => sum + item.precio * item.quantity, 0)
-    .toFixed(2);
+  const total = cart.reduce(
+    (sum, item) => sum + item.precio * item.quantity,
+    0
+  );
 
   return (
     <CartContext.Provider
@@ -53,12 +65,11 @@ export const CartProvider = ({ children }) => {
         decreaseQty,
         removeFromCart,
         total,
+        tipoPedido,
+        setTipoPedido,
       }}
     >
       {children}
     </CartContext.Provider>
   );
 };
-
-// ❗ ERROR CORREGIDO AQUÍ
-export const useCart = () => useContext(CartContext);

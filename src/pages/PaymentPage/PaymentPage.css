@@ -5,6 +5,37 @@
   margin: 0;
 }
 
+/* -------- BOTONES DE TIPO DE PEDIDO -------- */
+.tipo-pedido-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.tipo-pedido-buttons button {
+  padding: 10px 25px;
+  border-radius: 25px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: #f4f1e3;
+  color: #2e7d32;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tipo-pedido-buttons button:hover {
+  background: #e0dbc9;
+  transform: translateY(-2px);
+}
+
+.tipo-pedido-buttons button.active {
+  background: #2e7d32;
+  color: white;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
 /* -------- IZQUIERDA -------- */
 .left-section {
   background: #f0f0f0;
@@ -14,7 +45,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0; /* quitar margen */
 }
 
 .pay-image {
@@ -23,7 +53,7 @@
   transform: translateX(75px);
 }
 
-/* Botones */
+/* Botones de método de pago */
 .buttons-container {
   display: flex;
   gap: 20px;
@@ -37,20 +67,39 @@
   border-radius: 25px;
   font-size: 16px;
   cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-pay-method:hover {
+  background: #1b5e20;
+  transform: translateY(-2px);
 }
 
 .btn-pay-method.cash {
   background: #3c8f3a;
 }
 
+.btn-pay-method.cash:hover {
+  background: #276b27;
+}
+
+.btn-pay-method.active {
+  background: #1b5e20 !important;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
 /* -------- DERECHA -------- */
 .right-section {
   width: 50%;
   height: 100%;
-  padding: 60px 80px; /* aquí ajustas espacio interno */
+  padding: 60px 80px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  overflow-y: auto;
+  padding-bottom: 40px;
 }
 
 .right-section h3 {
@@ -59,7 +108,7 @@
   margin-bottom: 30px;
 }
 
-/* Inputs */
+/* FORMULARIOS */
 .form-payment label {
   font-size: 15px;
   font-weight: 500;
@@ -78,7 +127,7 @@
   background: transparent;
 }
 
-/* Botón de pagar */
+/* BOTÓN PRINCIPAL PAGAR */
 .btn-pay {
   margin-top: 20px;
   width: 180px;
@@ -89,42 +138,22 @@
   color: #333;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.2s ease-in-out;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-pay:hover {
   background-color: #e0dbc9;
-}
-.left-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px; /* espacio uniforme */
-  width: 100%;
-}
-.btn-pay-method.active {
-  background: #1b5e20 !important;
-  color: white !important;
+  transform: translateY(-2px);
 }
 
-.cash-box {
-  background: #f4f1e3;
-  padding: 20px;
-  border-radius: 15px;
-  text-align: center;
+/* RESUMEN CARRITO */
+.cart-summary {
+  margin-bottom: 30px;
 }
 
-.cash-code {
-  margin-top: 10px;
-  font-size: 26px;
-  font-weight: bold;
-}
-.right-section {
-  overflow-y: auto; /* ← ACTIVAR scroll si se llena */
-  padding-bottom: 40px; /* espacio para que se vea el botón */
-}
-/* === OVERLAY DE CARGA === */
+/* OVERLAY DE CARGA */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -140,7 +169,6 @@
   backdrop-filter: blur(3px);
 }
 
-/* Spinner */
 .spinner {
   width: 65px;
   height: 65px;
@@ -161,20 +189,4 @@
   font-size: 18px;
   font-weight: bold;
   color: #333;
-}
-.btn-pagar {
-  width: 100%;
-  background-color: #00754a;
-  padding: 15px;
-  border-radius: 40px;
-  border: none;
-  color: white;
-  font-size: 20px;
-  margin-top: 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.btn-pagar:hover {
-  background-color: #025f3a;
 }

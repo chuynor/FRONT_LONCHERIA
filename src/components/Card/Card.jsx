@@ -1,7 +1,7 @@
 // src/components/Card.jsx
 import React from "react";
 import "./Card.css";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../../context/CartContext.jsx";
 
 function Card({ item }) {
   const { addToCart } = useCart();

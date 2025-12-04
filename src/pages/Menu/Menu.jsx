@@ -1,7 +1,8 @@
-// src/pages/Menu.jsx
 import React, { useState, useEffect } from "react";
-import Card from "../components/Card";
-import { getProducts } from "../api/products";
+import Card from "../../components/Card/Card.jsx";
+import "../../components/Card/Card.css";
+import { getProducts } from "../../api/products";
+import { useCart } from "../../context/CartContext.jsx";
 import "./Menu.css";
 
 const Menu = () => {
@@ -9,6 +10,7 @@ const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { setTipoPedido } = useCart();
 
   const categories = ["tortas", "quesadillas", "sandwiches", "chocos", "jugos"];
 
@@ -24,12 +26,12 @@ const Menu = () => {
       });
   }, []);
 
-  const filteredItems = (menuItems || []).filter(
-    (item) => item?.categoria?.toLowerCase() === selectedCategory
-  );
-
   if (loading) return <p className="loading">Cargando menú... </p>;
   if (error) return <p className="error"> {error}</p>;
+
+  const filteredItems = menuItems.filter(
+    (item) => item?.categoria?.toLowerCase() === selectedCategory
+  );
 
   return (
     <div className="menu-page">
@@ -58,28 +60,6 @@ const Menu = () => {
           </p>
         )}
       </div>
-
-      {/* BOTÓN DE SALIDA RÁPIDA */}
-      <button
-        onClick={() => {
-          localStorage.clear();
-          window.location.href = "/login";
-        }}
-        style={{
-          position: "fixed",
-          top: 10,
-          right: 10,
-          padding: "8px 12px",
-          background: "#d9534f",
-          color: "white",
-          border: "none",
-          borderRadius: 6,
-          cursor: "pointer",
-          zIndex: 9999,
-        }}
-      >
-        Salir
-      </button>
     </div>
   );
 };

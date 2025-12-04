@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [tipoPedido, setTipoPedido] = useState(null);
+
+  const handleOption = (option) => {
+    setTipoPedido(option);
+    localStorage.setItem("tipoPedido", option); // Guardamos para usar en PaymentPage
+    navigate("/pago");
+  };
 
   return (
     <div className="home-container">
@@ -13,8 +20,18 @@ const Home = () => {
           <div className="pedido-text">
             <h2>¿Cómo quieres pedir?</h2>
             <div className="pedido-options">
-              <button className="option tienda">🏠 Tienda</button>
-              <button className="option domicilio">🚗 Domicilio</button>
+              <button
+                className="option tienda"
+                onClick={() => handleOption("tienda")}
+              >
+                🏠 Tienda
+              </button>
+              <button
+                className="option domicilio"
+                onClick={() => handleOption("domicilio")}
+              >
+                🚗 Domicilio
+              </button>
             </div>
           </div>
 
@@ -28,7 +45,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 🔹 Sección del pan dividida en dos mitades */}
+      {/* 🔹 Sección media */}
       <section className="home-mid">
         <div className="home-mid-left">
           <img src="/src/assets/pan.png" alt="Pan" className="pan-image" />
@@ -38,7 +55,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 🔹 Sección inferior (solo lado derecho moderno) */}
+      {/* 🔹 Sección inferior */}
       <section className="home-bottom">
         <div className="bottom-container">
           <div className="bottom-right">
@@ -54,18 +71,22 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 🔹 Sección Noticias y Promociones */}
+      {/* 🔹 Noticias y Promociones */}
       <section className="news-section">
         <div className="news-card noticias">
           <h2>NOTICIAS MIGAJAS</h2>
           <p>Consulta los eventos más recientes.</p>
-          <button className="news-btn">VER MÁS</button>
+          <button className="news-btn" onClick={() => navigate("/menu")}>
+            VER MÁS
+          </button>
         </div>
 
         <div className="news-card promociones">
           <h2>PROMOCIONES MIGAJAS</h2>
           <p>Términos y condiciones.</p>
-          <button className="news-btn">VER MÁS</button>
+          <button className="news-btn" onClick={() => navigate("/menu")}>
+            VER MÁS
+          </button>
         </div>
       </section>
     </div>

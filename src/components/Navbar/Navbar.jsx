@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
@@ -9,6 +8,8 @@ const Navbar = () => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+
+  const [userFoto, setUserFoto] = useState("/src/assets/userr.png");
 
   const isLoggedIn = !!localStorage.getItem("usuario");
   const role = localStorage.getItem("role");
@@ -22,9 +23,33 @@ const Navbar = () => {
     "/register": "Registro",
     "/cart": "Carrito",
     "/admin": "Administración",
+    "/perfil": "Mi Perfil",
+    "/compras": "Mis Compras",
   };
 
   const currentTitle = pageTitles[location.pathname] || "Página";
+
+  // --------------------
+  // CARGAR FOTO DEL USUARIO
+  // --------------------
+  useEffect(() => {
+    const datosGuardados = JSON.parse(localStorage.getItem("userData"));
+    if (datosGuardados && datosGuardados.foto) {
+      setUserFoto(datosGuardados.foto);
+    }
+  }, []);
+
+  // Escuchar cambios en localStorage (cuando se cambie la foto en Perfil)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const datosGuardados = JSON.parse(localStorage.getItem("userData"));
+      if (datosGuardados && datosGuardados.foto) {
+        setUserFoto(datosGuardados.foto);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   // --------------------
   // CERRAR SESIÓN
@@ -65,9 +90,6 @@ const Navbar = () => {
           Contacto
         </Link>
 
-        {/* --------------------
-          BOTÓN ADMIN SOLO SI ES ADMIN
-        -------------------- */}
         {isAdmin && (
           <Link to="/admin" className="nav-link">
             Admin
@@ -93,7 +115,11 @@ const Navbar = () => {
               className="profile-circle"
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              <img src="/src/assets/userr.png" className="profile-img" />
+              <img
+                src={userFoto}
+                className="profile-img"
+                alt="Foto de usuario"
+              />
             </div>
 
             {menuOpen && (

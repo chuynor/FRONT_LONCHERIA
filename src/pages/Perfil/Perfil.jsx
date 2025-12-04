@@ -1,20 +1,19 @@
+// src/pages/Perfil/Perfil.jsx
 import React, { useState, useEffect } from "react";
 import "./Perfil.css";
 import { useNavigate } from "react-router-dom";
+import fotoPerfil from "/src/assets/perfil.jpg";
 
 export default function Perfil() {
   const navigate = useNavigate();
+
   const [user, setUser] = useState({
     nombre: "Usuario",
     email: "usuario@correo.com",
-    foto: "/src/assets/perfil.jpg",
-    pedidos: 0,
+    foto: fotoPerfil,
+    pedidos: [],
   });
 
-  // 🔹 Simular progreso basado en pedidos
-  const progreso = Math.min((user.pedidos / 10) * 100, 100);
-
-  // 🔹 Cambiar foto de perfil
   const handleChangeFoto = (e) => {
     const archivo = e.target.files[0];
     if (archivo) {
@@ -25,21 +24,24 @@ export default function Perfil() {
     }
   };
 
-  // 🔹 Cerrar sesión
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("role");
     navigate("/login");
   };
 
-  // 🔹 Obtener datos de usuario de localStorage
   useEffect(() => {
     const datosGuardados = JSON.parse(localStorage.getItem("userData"));
     if (datosGuardados) setUser(datosGuardados);
   }, []);
 
+  const progreso = Math.min((user.pedidos.length / 10) * 100, 100);
+
   return (
     <div className="perfil-container">
       <div className="perfil-card">
+        {/* FOTO */}
         <div className="perfil-foto">
           <img src={user.foto} alt="Foto de perfil" />
           <label className="cambiar-foto">
@@ -48,23 +50,60 @@ export default function Perfil() {
           </label>
         </div>
 
+        {/* NOMBRE + CORREO */}
         <h2>{user.nombre}</h2>
         <p>{user.email}</p>
 
-        {/* 🔹 Barra de progreso */}
+        {/* PROGRESO */}
         <div className="progreso-container">
           <div
             className="progreso-barra"
             style={{ width: `${progreso}%` }}
           ></div>
         </div>
-        <p className="progreso-texto">Pedidos completados: {user.pedidos}/10</p>
+        <p className="progreso-texto">
+          Pedidos completados: {user.pedidos.length}/10
+        </p>
 
-        {/* 🔹 Botones */}
+        {/* BOTONES */}
         <div className="perfil-botones">
           <button onClick={() => navigate("/compras")}>Ver mis compras</button>
           <button onClick={handleLogout}>Cerrar sesión</button>
         </div>
+
+        {/* LISTADO DE PEDIDOS */}
+        {user.pedidos.length > 0 && (
+          <div className="pedidos-lista">
+            <h3>Pedidos recientes</h3>
+            {user.pedidos.map((pedido, index) => (
+              <div key={index} className="pedido-card">
+                <p>
+                  <strong>Código:</strong> {pedido.codigoCompra || index + 1}
+                </p>
+                <p>
+                  <strong>Tipo:</strong> {pedido.tipoPedido}
+                </p>
+                <p>
+                  <strong>Método de pago:</strong> {pedido.metodoPago}
+                </p>
+                <p>
+                  <strong>Fecha:</strong>{" "}
+                  {new Date(pedido.fecha).toLocaleString()}
+                </p>
+
+                <h4>Productos:</h4>
+                <ul>
+                  {pedido.cart.map((item) => (
+                    <li key={item.id}>
+                      {item.nombre} x {item.quantity} - $
+                      {item.precio * item.quantity}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

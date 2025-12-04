@@ -99,10 +99,11 @@ export default function AdminDashboard() {
     descripcion: "",
   });
 
-  const [newProducto, setNewProducto] = useState({
+const [newProducto, setNewProducto] = useState({
     nombre: "",
     precio: "",
     categoria: "",
+    imagen: "", // <--- AGREGAR ESTO
     ingredientes: [],
   });
 
@@ -281,13 +282,15 @@ export default function AdminDashboard() {
     }));
   };
 
-  const createProducto = async (e) => {
+ const createProducto = async (e) => {
     e.preventDefault();
     if (!newProducto.nombre) return setError("Nombre de producto requerido");
     if (!newProducto.precio || Number(newProducto.precio) <= 0)
       return setError("Precio inválido");
     if (newProducto.ingredientes.length === 0)
       return setError("Selecciona al menos un ingrediente");
+    
+    // Validación de ingredientes
     for (const it of newProducto.ingredientes) {
       if (!it.cantidad || Number(it.cantidad) <= 0)
         return setError("Todas las cantidades deben ser > 0");
@@ -299,6 +302,7 @@ export default function AdminDashboard() {
         nombre: newProducto.nombre,
         precio: Number(newProducto.precio),
         categoria: newProducto.categoria || "sin-categoria",
+        imagen: newProducto.imagen || "", // <--- AGREGAR ESTO AL PAYLOAD
         ingredientes: newProducto.ingredientes.map((i) => ({
           ingrediente: i.ingrediente,
           cantidad: Number(i.cantidad),
@@ -314,10 +318,12 @@ export default function AdminDashboard() {
         true
       );
 
+      // Limpiar formulario incluyendo la imagen
       setNewProducto({
         nombre: "",
         precio: "",
         categoria: "",
+        imagen: "", // <--- RESETEAR AQUÍ
         ingredientes: [],
       });
       const ingrList = await fetchIngredientes();
@@ -908,6 +914,26 @@ const ventasFiltradas = sales.filter((venta) => {
                 setNewProducto({ ...newProducto, nombre: e.target.value })
               }
             />
+            <input
+              className="form-control mb-2"
+              placeholder="URL de la imagen (https://...)"
+              value={newProducto.imagen}
+              onChange={(e) =>
+                setNewProducto({ ...newProducto, imagen: e.target.value })
+              }
+            />
+            {/* Vista previa opcional si hay una URL escrita */}
+            {newProducto.imagen && (
+              <div className="mb-2 text-center">
+                <img 
+                  src={newProducto.imagen} 
+                  alt="Previsualización" 
+                  style={{ maxHeight: "80px", borderRadius: "4px" }} 
+                  onError={(e) => e.target.style.display = 'none'} // Ocultar si la url es mala
+                />
+              </div>
+            )}
+            {/* ----------------------------- */}
             <input
               type="number"
               className="form-control mb-2"

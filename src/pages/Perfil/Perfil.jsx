@@ -14,27 +14,58 @@ export default function Perfil() {
     pedidos: [],
   });
 
+  // 🔥 Cargar usuario REAL desde localStorage
+  useEffect(() => {
+    const usuarioLS = JSON.parse(localStorage.getItem("usuario"));
+    const fotoLS = localStorage.getItem("fotoPerfil");
+
+    if (usuarioLS) {
+      setUser((prev) => ({
+        ...prev,
+        nombre: usuarioLS.nombre,
+        email: usuarioLS.email,
+        foto: fotoLS || prev.foto,
+        pedidos: usuarioLS.pedidos || [],
+      }));
+    }
+  }, []);
+
+  // 🔥 Cuando cambie de sesión, recargar la info del usuario
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const usuarioLS = JSON.parse(localStorage.getItem("usuario"));
+      if (usuarioLS) {
+        setUser((prev) => ({
+          ...prev,
+          nombre: usuarioLS.nombre,
+          email: usuarioLS.email,
+          pedidos: usuarioLS.pedidos || [],
+        }));
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  // 🔥 Cambiar foto
   const handleChangeFoto = (e) => {
     const archivo = e.target.files[0];
     if (archivo) {
       const url = URL.createObjectURL(archivo);
-      const nuevoUser = { ...user, foto: url };
-      setUser(nuevoUser);
-      localStorage.setItem("userData", JSON.stringify(nuevoUser));
+      setUser((prev) => ({ ...prev, foto: url }));
+      localStorage.setItem("fotoPerfil", url);
     }
   };
 
+  // 🔥 Logout limpio
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
     localStorage.removeItem("role");
+    localStorage.removeItem("fotoPerfil");
     navigate("/login");
   };
-
-  useEffect(() => {
-    const datosGuardados = JSON.parse(localStorage.getItem("userData"));
-    if (datosGuardados) setUser(datosGuardados);
-  }, []);
 
   const progreso = Math.min((user.pedidos.length / 10) * 100, 100);
 
@@ -84,7 +115,7 @@ export default function Perfil() {
                   <strong>Tipo:</strong> {pedido.tipoPedido}
                 </p>
                 <p>
-                  <strong>Método de pago:</strong> {pedido.metodoPago}
+                  <strong>Método:</strong> {pedido.metodoPago}
                 </p>
                 <p>
                   <strong>Fecha:</strong>{" "}
@@ -95,7 +126,7 @@ export default function Perfil() {
                 <ul>
                   {pedido.cart.map((item) => (
                     <li key={item.id}>
-                      {item.nombre} x {item.quantity} - $
+                      {item.nombre} x {item.quantity} — $
                       {item.precio * item.quantity}
                     </li>
                   ))}

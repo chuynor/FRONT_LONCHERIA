@@ -1,3 +1,4 @@
+// src/components/Navbar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
@@ -9,7 +10,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const [userFoto, setUserFoto] = useState("/src/assets/userr.png");
+  // FOTO DEL USUARIO (por defecto)
+  const [userFoto, setUserFoto] = useState("/src/assets/profile.png");
 
   const isLoggedIn = !!localStorage.getItem("usuario");
   const role = localStorage.getItem("role");
@@ -29,39 +31,48 @@ const Navbar = () => {
 
   const currentTitle = pageTitles[location.pathname] || "Página";
 
-  // --------------------
-  // CARGAR FOTO DEL USUARIO
-  // --------------------
+  // -----------------------------
+  // CARGAR FOTO DEL PERFIL
+  // -----------------------------
   useEffect(() => {
-    const datosGuardados = JSON.parse(localStorage.getItem("userData"));
-    if (datosGuardados && datosGuardados.foto) {
-      setUserFoto(datosGuardados.foto);
+    const fotoLS = localStorage.getItem("fotoPerfil");
+    if (fotoLS) {
+      setUserFoto(fotoLS);
+    } else {
+      setUserFoto("/src/assets/userr.png");
     }
   }, []);
 
-  // Escuchar cambios en localStorage (cuando se cambie la foto en Perfil)
+  // Escuchar cuando la foto se actualiza desde Perfil.jsx
   useEffect(() => {
     const handleStorageChange = () => {
-      const datosGuardados = JSON.parse(localStorage.getItem("userData"));
-      if (datosGuardados && datosGuardados.foto) {
-        setUserFoto(datosGuardados.foto);
+      const fotoLS = localStorage.getItem("fotoPerfil");
+      if (fotoLS) {
+        setUserFoto(fotoLS);
+      } else {
+        setUserFoto("/src/assets/userr.png");
       }
     };
+
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // --------------------
+  // -----------------------------
   // CERRAR SESIÓN
-  // --------------------
+  // -----------------------------
   const handleLogout = () => {
-    localStorage.removeItem("token");
     localStorage.removeItem("usuario");
     localStorage.removeItem("role");
+    localStorage.removeItem("token");
+    localStorage.removeItem("fotoPerfil");
+
     navigate("/login");
   };
 
-  // Cerrar menú cuando clic fuera
+  // -----------------------------
+  // CERRAR MENÚ AL HACER CLIC FUERA
+  // -----------------------------
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {

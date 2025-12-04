@@ -1,4 +1,3 @@
-// AdminDashboard.jsx → VERSIÓN CORREGIDA PARA JSX
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
@@ -13,12 +12,13 @@ const getAuthHeaders = (needsAuth = false) => {
   };
 
   if (needsAuth) {
-    console.log("Getting auth headers for admin request");
-    const user = JSON.parse(localStorage.getItem("usuario") || "{}");
-    const token = user.token;
-    console.log("Using auth token:", token);
-    if (!token)
-      throw new Error("Falta el token de autorización del administrador");
+    // aceptar tanto "usuario" como "user" en localStorage
+    const stored = localStorage.getItem("usuario") || localStorage.getItem("user") || "{}";
+    let user = {};
+    try { user = JSON.parse(stored); } catch { user = {}; }
+    const token = user?.token || user?.accessToken || localStorage.getItem("token");
+    if (!token) throw new Error("Falta el token de autorización del administrador");
+    // backend espera header en minúsculas
     headers["authorization"] = `Bearer ${token}`;
   }
 
@@ -53,8 +53,11 @@ async function apiFetch(path, opts = {}, needsAuth = false) {
 }
 
 export default function AdminDashboard() {
-  const user = JSON.parse(localStorage.getItem("usuario") || "{}");
-  console.log(user);
+  // aceptar tanto "usuario" como "user" en localStorage
+  const storedUser = localStorage.getItem("usuario") || localStorage.getItem("user") || "{}";
+  let parsedUser = {};
+  try { parsedUser = JSON.parse(storedUser); } catch { parsedUser = {}; }
+  const user = parsedUser;
   const isAdmin = !!user?.isAdmin || user?.rol === "admin";
 
   if (!APP_TOKEN) {
@@ -108,44 +111,61 @@ export default function AdminDashboard() {
   const [sellLoading, setSellLoading] = useState(false);
   const [sellError, setSellError] = useState("");
 
+  // load ingredientes then productos (await to avoid race conditions)
   useEffect(() => {
     if (!isAdmin) return;
-    fetchIngredientes();
-    fetchProductos();
+    (async () => {
+      try {
+        const ingrList = await fetchIngredientes(); // returns list
+        await fetchProductos(ingrList);
+      } catch (err) {
+        // fetchIngredientes/fetchProductos already set errors
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
 
+  // fetchIngredientes ahora devuelve la lista para uso inmediato
   const fetchIngredientes = async () => {
     setLoadingIng(true);
     setError("");
     try {
       const res = await apiFetch("/api/ingredientes");
-      setIngredientes(Array.isArray(res) ? res : res?.data || []);
+      const list = Array.isArray(res) ? res : res?.data || [];
+      setIngredientes(list);
+      return list;
     } catch (err) {
       setError(err.message || "Error cargando ingredientes");
+      return [];
     } finally {
       setLoadingIng(false);
     }
   };
 
-  const fetchProductos = async () => {
+  // fetchProductos acepta optional cachedIngredientes para mapping seguro
+  const fetchProductos = async (cachedIngredientes = null) => {
     setLoadingProd(true);
     setError("");
     try {
       const res = await apiFetch("/api/productos?populate=true");
-      const productosPop = (Array.isArray(res) ? res : res?.data || []).map(
-        (p) => ({
-          ...p,
-          ingredientes: (p.ingredientes || []).map((it) => ({
-            ...it,
-            ingrediente: ingredientes.find((i) => i._id === it.ingrediente) || {
-              _id: it.ingrediente,
-              nombre: "Desconocido",
-              cantidad: "N/A",
-              unidad: "",
-            },
-          })),
-        })
-      );
+      const productosArr = Array.isArray(res) ? res : res?.data || [];
+      const ingrSource = Array.isArray(cachedIngredientes) ? cachedIngredientes : ingredientes;
+
+      const productosPop = productosArr.map((p) => {
+        const mappedIngredientes = (p.ingredientes || []).map((it) => {
+          // if backend returned populated ingredient object, use it
+          if (it.ingrediente && typeof it.ingrediente === "object" && it.ingrediente._id) {
+            return { ...it, ingrediente: it.ingrediente };
+          }
+          // otherwise try to find in cached ingredientes
+          const found = (ingrSource || []).find((i) => String(i._id) === String(it.ingrediente));
+          if (found) return { ...it, ingrediente: found };
+          // fallback: keep id and null stock to avoid NaN
+          return { ...it, ingrediente: { _id: it.ingrediente, nombre: "Desconocido", cantidad: null, unidad: "" } };
+        });
+        return { ...p, ingredientes: mappedIngredientes };
+      });
+
       setProductos(productosPop);
     } catch (err) {
       setError(err.message || "Error cargando productos");
@@ -155,7 +175,6 @@ export default function AdminDashboard() {
   };
 
   // ================== INGREDIENTES ==================
-  // Crear ingrediente
   const createIngrediente = async (e) => {
     e.preventDefault();
     if (!newIngrediente.nombre)
@@ -186,7 +205,8 @@ export default function AdminDashboard() {
         descripcion: "",
       });
 
-      await fetchIngredientes();
+      const ingrList = await fetchIngredientes();
+      await fetchProductos(ingrList);
       setError("");
     } catch (err) {
       setError(err.body?.mensaje || err.message || "Error creando ingrediente");
@@ -195,7 +215,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Recargar stock de un ingrediente
   const recargarStock = async (id) => {
     const cantidadStr = prompt("Cantidad a recargar (número positivo):", "1");
     if (cantidadStr === null) return;
@@ -213,22 +232,20 @@ export default function AdminDashboard() {
         true
       );
 
-      await fetchIngredientes();
-      await fetchProductos();
+      const ingrList = await fetchIngredientes();
+      await fetchProductos(ingrList);
     } catch (err) {
       alert(err.body?.mensaje || err.message || "Error al recargar stock");
     }
   };
 
-  // Eliminar ingrediente
   const deleteIngrediente = async (id) => {
-    if (!window.confirm("¿Eliminar ingrediente? Esto puede afectar productos."))
-      return;
+    if (!window.confirm("¿Eliminar ingrediente? Esto puede afectar productos.")) return;
 
     try {
       await apiFetch(`/api/ingredientes/${id}`, { method: "DELETE" }, true);
-      await fetchIngredientes();
-      await fetchProductos();
+      const ingrList = await fetchIngredientes();
+      await fetchProductos(ingrList);
     } catch (err) {
       alert(err.body?.mensaje || "Error eliminando ingrediente");
     }
@@ -303,7 +320,8 @@ export default function AdminDashboard() {
         categoria: "",
         ingredientes: [],
       });
-      await fetchProductos();
+      const ingrList = await fetchIngredientes();
+      await fetchProductos(ingrList);
       setError("");
     } catch (err) {
       setError(err.body?.mensaje || "Error creando producto");
@@ -316,7 +334,7 @@ export default function AdminDashboard() {
     if (!window.confirm("¿Eliminar producto?")) return;
     try {
       await apiFetch(`/api/productos/${id}`, { method: "DELETE" }, true);
-      await fetchProductos();
+      await fetchProductos(await fetchIngredientes());
     } catch (err) {
       alert(err.body?.mensaje || "Error eliminando producto");
     }
@@ -354,11 +372,11 @@ export default function AdminDashboard() {
       setSales(all);
       localStorage.setItem("ventas", JSON.stringify(all));
 
-      await fetchIngredientes();
-      await fetchProductos();
+      const ingrList = await fetchIngredientes();
+      await fetchProductos(ingrList);
       setSellingProduct(null);
     } catch (err) {
-      setSellError(err.body?.mensaje || "Error procesando venta");
+      setSellError(err.body?.mensaje || err.message || "Error procesando venta");
     } finally {
       setSellLoading(false);
     }
@@ -442,6 +460,87 @@ export default function AdminDashboard() {
     );
   }
 
+  // helper para mostrar stock seguro
+  const formatStock = (ingr) => {
+    if (!ingr || ingr.cantidad == null || isNaN(Number(ingr.cantidad))) return "N/A";
+    return Number(ingr.cantidad).toFixed(3);
+  };
+  // SECCIÓN: HELPERS (agregar DESPUÉS de la función formatStock y ANTES de los useState de filtros)
+
+// ========== HELPER 1: Calcular ingresos totales ==========
+const calcularIngresosTotales = () => {
+  return sales.reduce((total, venta) => {
+    const producto = productos.find(p => p.nombre === venta.producto);
+    return total + (producto?.precio || 0) * venta.cantidad;
+  }, 0);
+};
+
+// ========== HELPER 2: Calcular ingresos por categoría ==========
+const calcularIngresosPorCategoria = () => {
+  const ingresos = {};
+  sales.forEach((venta) => {
+    const producto = productos.find(p => p.nombre === venta.producto);
+    if (producto) {
+      const cat = producto.categoria || "Sin categoría";
+      ingresos[cat] = (ingresos[cat] || 0) + (producto.precio * venta.cantidad);
+    }
+  });
+  return ingresos;
+};
+
+// ========== HELPER 3: Obtener ingredientes con stock bajo ==========
+const obtenerStockBajo = () => {
+  return ingredientes.filter(ing => ing.cantidad < (ing.stockMinimo || 5));
+};
+
+// ========== HELPER 4: Formatear fecha y hora ==========
+const formatearFecha = (fechaIso) => {
+  try {
+    const d = new Date(fechaIso);
+    return d.toLocaleDateString("es-MX") + " " + d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+  } catch {
+    return "N/A";
+  }
+};
+
+// ========== HELPER 5: Exportar ventas a CSV ==========
+const exportarVentasCSV = () => {
+  const headers = ["Fecha", "Producto", "Cantidad", "Precio Unitario", "Total"];
+  const rows = sales.map((v) => {
+    const prod = productos.find(p => p.nombre === v.producto);
+    const precio = prod?.precio || 0;
+    const total = precio * v.cantidad;
+    return [
+      formatearFecha(v.fecha),
+      v.producto,
+      v.cantidad,
+      `$${precio}`,
+      `$${total.toFixed(2)}`
+    ];
+  });
+
+  const csv = [headers, ...rows].map(row => row.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `ventas_${new Date().toISOString().split("T")[0]}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+};
+
+// ========== FIN HELPERS ==========
+// Estado para filtros de historial
+const [filterProducto, setFilterProducto] = useState("");
+const [filterFecha, setFilterFecha] = useState("");
+
+// Filtrar ventas según criterios
+const ventasFiltradas = sales.filter((venta) => {
+  const matchProducto = !filterProducto || venta.producto.toLowerCase().includes(filterProducto.toLowerCase());
+  const matchFecha = !filterFecha || venta.fecha.startsWith(filterFecha);
+  return matchProducto && matchFecha;
+});
+
   return (
     <div className="container py-4">
       <h2 className="mb-4 text-success fw-bold">Panel de Administrador</h2>
@@ -468,8 +567,8 @@ export default function AdminDashboard() {
 
       {error && <div className="alert alert-danger">{error}</div>}
 
-      {/* Stats */}
-      <div className="row g-4">
+      {/* Stats Cards */}
+      <div className="row g-4 mb-4">
         <div className="col-md-4">
           <div className="p-4 bg-white rounded shadow-sm border">
             <h5 className="text-muted">Ventas registradas</h5>
@@ -485,32 +584,209 @@ export default function AdminDashboard() {
         <div className="col-md-4">
           <div className="p-4 bg-white rounded shadow-sm border">
             <h5 className="text-muted">Stock total (ingredientes)</h5>
-            <h3 className="mt-2 text-success">
-              {Number(totalStock).toFixed(3)}
-            </h3>
+            <h3 className="mt-2 text-success">{Number(totalStock).toFixed(3)}</h3>
           </div>
         </div>
       </div>
 
       {/* Charts */}
       {(totalSales > 0 || totalProducts > 0) && (
-        <div className="row g-4 mt-4">
+        <div className="row g-4 mb-4">
           {salesChartData && (
             <div className="col-md-6">
-              <h5 className="fw-semibold">Ventas por día</h5>
-              <Bar data={salesChartData} />
+              <div className="bg-white p-3 rounded shadow-sm">
+                <h5 className="fw-semibold mb-3">Ventas por día de la semana</h5>
+                <Bar data={salesChartData} options={{ responsive: true, maintainAspectRatio: true }} />
+              </div>
             </div>
           )}
           {stockChartData && (
             <div className="col-md-6">
-              <h5 className="fw-semibold">Stock por categoría</h5>
-              <Doughnut data={stockChartData} />
+              <div className="bg-white p-3 rounded shadow-sm">
+                <h5 className="fw-semibold mb-3">Stock por categoría</h5>
+                <Doughnut data={stockChartData} options={{ responsive: true, maintainAspectRatio: true }} />
+              </div>
             </div>
           )}
         </div>
       )}
 
-      {/* Productos & Formularios */}
+      {/* ALERTAS DE STOCK BAJO */}
+      <div className="row g-4 mb-4">
+        <div className="col-md-12">
+          <div className="bg-white p-4 rounded shadow-sm border border-warning">
+            <h5 className="fw-semibold mb-3 text-warning">⚠️ Ingredientes con Stock Bajo</h5>
+            {obtenerStockBajo().length === 0 ? (
+              <p className="text-success mb-0">✅ Todos los ingredientes tienen stock adecuado</p>
+            ) : (
+              <div className="table-responsive">
+                <table className="table table-sm mb-0">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Ingrediente</th>
+                      <th>Stock Actual</th>
+                      <th>Stock Mínimo</th>
+                      <th>Unidad</th>
+                      <th>Estado</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {obtenerStockBajo().map((ing) => {
+                      const porcentaje = (ing.cantidad / (ing.stockMinimo || 5)) * 100;
+                      const badge = ing.cantidad === 0 ? "danger" : porcentaje < 50 ? "danger" : "warning";
+                      return (
+                        <tr key={ing._id}>
+                          <td><strong>{ing.nombre}</strong></td>
+                          <td>{Number(ing.cantidad).toFixed(3)}</td>
+                          <td>{ing.stockMinimo || 5}</td>
+                          <td>{ing.unidad}</td>
+                          <td>
+                            <span className={`badge bg-${badge}`}>
+                              {ing.cantidad === 0 ? "CRÍTICO" : "BAJO"}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              className="btn btn-sm btn-warning"
+                              onClick={() => recargarStock(ing._id)}
+                            >
+                              Recargar
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* RESUMEN DE INGRESOS */}
+      <div className="row g-4 mb-4">
+        <div className="col-md-6">
+          <div className="bg-white p-4 rounded shadow-sm border">
+            <h5 className="fw-semibold mb-3">💰 Ingresos Totales</h5>
+            <h3 className="text-success mb-0">${Number(calcularIngresosTotales()).toFixed(2)}</h3>
+            <small className="text-muted">Desde {sales.length > 0 ? "el inicio" : "sin ventas"}</small>
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="bg-white p-4 rounded shadow-sm border">
+            <h5 className="fw-semibold mb-3">📊 Ingresos por Categoría</h5>
+            {Object.keys(calcularIngresosPorCategoria()).length === 0 ? (
+              <p className="text-muted mb-0">Sin ventas registradas</p>
+            ) : (
+              <ul className="list-unstyled mb-0">
+                {Object.entries(calcularIngresosPorCategoria()).map(([cat, ing]) => (
+                  <li key={cat} className="d-flex justify-content-between mb-2">
+                    <span>{cat}:</span>
+                    <strong className="text-success">${Number(ing).toFixed(2)}</strong>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* HISTORIAL DE VENTAS */}
+      <div className="row g-4 mb-4">
+        <div className="col-md-12">
+          <div className="bg-white p-4 rounded shadow-sm border">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 className="fw-semibold mb-0">📝 Historial de Ventas</h5>
+              {sales.length > 0 && (
+                <button className="btn btn-sm btn-outline-primary" onClick={exportarVentasCSV}>
+                  📥 Descargar CSV
+                </button>
+              )}
+            </div>
+
+            {/* Filtros */}
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  placeholder="Filtrar por producto..."
+                  value={filterProducto}
+                  onChange={(e) => setFilterProducto(e.target.value)}
+                />
+              </div>
+              <div className="col-md-6">
+                <input
+                  type="date"
+                  className="form-control form-control-sm"
+                  value={filterFecha}
+                  onChange={(e) => setFilterFecha(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Tabla de ventas */}
+            {ventasFiltradas.length === 0 ? (
+              <p className="text-muted text-center mb-0">
+                {sales.length === 0 ? "Sin ventas registradas" : "No hay ventas que coincidan con los filtros"}
+              </p>
+            ) : (
+              <div className="table-responsive">
+                <table className="table table-sm table-hover mb-0">
+                  <thead className="table-light">
+                    <tr>
+                      <th style={{ width: "20%" }}>Fecha y Hora</th>
+                      <th style={{ width: "35%" }}>Producto</th>
+                      <th style={{ width: "10%" }} className="text-center">Cantidad</th>
+                      <th style={{ width: "15%" }} className="text-end">Precio Unit.</th>
+                      <th style={{ width: "15%" }} className="text-end">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ventasFiltradas.map((venta, idx) => {
+                      const prod = productos.find(p => p.nombre === venta.producto);
+                      const precio = prod?.precio || 0;
+                      const total = precio * venta.cantidad;
+                      return (
+                        <tr key={idx}>
+                          <td>
+                            <small>{formatearFecha(venta.fecha)}</small>
+                          </td>
+                          <td>
+                            <strong>{venta.producto}</strong>
+                            {prod && <div className="small text-muted">{prod.categoria}</div>}
+                          </td>
+                          <td className="text-center">{venta.cantidad}</td>
+                          <td className="text-end">${Number(precio).toFixed(2)}</td>
+                          <td className="text-end">
+                            <strong className="text-success">${Number(total).toFixed(2)}</strong>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {/* Fila de totales */}
+                    <tr className="table-light fw-bold">
+                      <td colSpan="2">TOTAL ({ventasFiltradas.length} ventas)</td>
+                      <td className="text-center">{ventasFiltradas.reduce((a, v) => a + v.cantidad, 0)}</td>
+                      <td></td>
+                      <td className="text-end text-success">
+                        ${Number(ventasFiltradas.reduce((a, v) => {
+                          const prod = productos.find(p => p.nombre === v.producto);
+                          return a + ((prod?.precio || 0) * v.cantidad);
+                        }, 0)).toFixed(2)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Productos list rendering uses formatStock */}
       <div className="row g-4 mt-4">
         <div className="col-md-7">
           <h4>Productos</h4>
@@ -532,16 +808,16 @@ export default function AdminDashboard() {
                   <div className="small mt-1">
                     Ingredientes:
                     <ul className="mb-0">
-                      {(p.ingredientes || []).map((it) => (
-                        <li key={it.ingrediente._id || it.ingrediente}>
-                          {it.ingrediente?.nombre || it.ingrediente} — necesita{" "}
-                          {Number(it.cantidad).toFixed(3)}{" "}
-                          {it.ingrediente?.unidad || ""} — stock:{" "}
-                          {it.ingrediente?.cantidad != null
-                            ? Number(it.ingrediente.cantidad).toFixed(3)
-                            : "N/A"}
-                        </li>
-                      ))}
+                      {(p.ingredientes || []).map((it) => {
+                        const ingrObj = it.ingrediente;
+                        const nombre = ingrObj?.nombre || "Desconocido";
+                        const unidad = ingrObj?.unidad || "";
+                        return (
+                          <li key={ingrObj?._id || it.ingrediente}>
+                            {nombre} — necesita {Number(it.cantidad).toFixed(3)} {unidad} — stock: {formatStock(ingrObj)}
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 </div>
@@ -564,6 +840,7 @@ export default function AdminDashboard() {
           )}
         </div>
 
+        {/* right column with forms (unchanged) */}
         <div className="col-md-5">
           <h4>Crear ingrediente</h4>
           <form onSubmit={createIngrediente}>
@@ -709,7 +986,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Ingredientes existentes */}
+      {/* Ingredientes existentes list (unchanged) and sell modal unchanged */}
       <hr />
       <h4>Ingredientes existentes</h4>
       <div className="list-group">
@@ -739,7 +1016,7 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Modal Venta */}
+      {/* Sell Modal */}
       {sellingProduct && (
         <div
           style={{

@@ -29,7 +29,7 @@ function Contacto() {
             compañía o una cena especial bajo el encanto del centro histórico.
             <br />
             <strong>Dirección sugerida:</strong> Calle Principal #123, Zona
-            Centro. (Puedes cambiarla según la ubicación real que desees.)
+            Centro.
           </p>
         </div>
       </section>

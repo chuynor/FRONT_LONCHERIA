@@ -1,24 +1,27 @@
-// src/pages/PagoExitoso.jsx
+// src/pages/PagoExitoso/PagoExitoso.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext.jsx"; // ✔ CORRECTO
 import "./PagoExitoso.css";
 
 export default function PagoExitoso() {
   const navigate = useNavigate();
   const [purchaseCode, setPurchaseCode] = useState(null);
+  const { clearCart } = useCart(); // limpia carrito
 
   useEffect(() => {
-    // Obtener los pedidos guardados
+    // Obtener datos guardados
     const userData = JSON.parse(localStorage.getItem("userData")) || {};
     const pedidos = userData.pedidos || [];
     const lastOrder = pedidos[pedidos.length - 1] || { metodoPago: "cash" };
 
-    // Generar código aleatorio de 6 dígitos
+    // Generar código aleatorio
     const code = Math.floor(100000 + Math.random() * 900000);
     setPurchaseCode(code);
 
-    // Guardar el código en el pedido para futuras referencias
+    // Guardarlo en el pedido
     lastOrder.codigoCompra = code;
+
     const updatedPedidos = pedidos.length
       ? [...pedidos.slice(0, -1), lastOrder]
       : [lastOrder];
@@ -27,6 +30,9 @@ export default function PagoExitoso() {
       "userData",
       JSON.stringify({ ...userData, pedidos: updatedPedidos })
     );
+
+    // 🟢 Limpiar carrito al completar compra
+    clearCart();
   }, []);
 
   return (

@@ -1,3 +1,4 @@
+// src/context/CartContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
@@ -10,45 +11,53 @@ export const CartProvider = ({ children }) => {
     localStorage.getItem("tipoPedido") || ""
   );
 
+  // Cargar carrito de localStorage al iniciar
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
   }, []);
 
+  // Guardar carrito en localStorage cuando cambie
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (product) => {
     setCart((prev) => {
-      const exists = prev.find((p) => p.id === product.id);
+      const exists = prev.find((p) => p._id === product._id);
       if (exists) {
         return prev.map((p) =>
-          p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+          p._id === product._id ? { ...p, quantity: p.quantity + 1 } : p
         );
       }
       return [...prev, { ...product, quantity: 1 }];
     });
   };
 
-  const increaseQty = (id) => {
+  const increaseQty = (_id) => {
     setCart((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, quantity: p.quantity + 1 } : p))
+      prev.map((p) => (_id === p._id ? { ...p, quantity: p.quantity + 1 } : p))
     );
   };
 
-  const decreaseQty = (id) => {
+  const decreaseQty = (_id) => {
     setCart((prev) =>
       prev
         .map((p) =>
-          p.id === id ? { ...p, quantity: Math.max(1, p.quantity - 1) } : p
+          _id === p._id ? { ...p, quantity: Math.max(1, p.quantity - 1) } : p
         )
         .filter((p) => p.quantity > 0)
     );
   };
 
-  const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((p) => p.id !== id));
+  const removeFromCart = (_id) => {
+    setCart((prev) => prev.filter((p) => p._id !== _id));
+  };
+
+  // 🟢 LIMPIAR CARRITO
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem("cart");
   };
 
   const total = cart.reduce(
@@ -64,6 +73,7 @@ export const CartProvider = ({ children }) => {
         increaseQty,
         decreaseQty,
         removeFromCart,
+        clearCart, // ← IMPORTANTE
         total,
         tipoPedido,
         setTipoPedido,

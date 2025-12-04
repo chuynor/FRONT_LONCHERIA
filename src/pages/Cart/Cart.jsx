@@ -1,67 +1,63 @@
-// src/pages/Cart.jsx
+// src/pages/Cart/Cart.jsx
 import React from "react";
-import "./Cart.css";
-import { useCart } from "../../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext.jsx";
+import "./Cart.css";
 
-export default function Cart() {
-  const { cart, increaseQty, decreaseQty, removeFromCart, total } = useCart();
+const Cart = () => {
   const navigate = useNavigate();
+  const { cart, increaseQty, decreaseQty, removeFromCart, total } = useCart();
+
+  if (cart.length === 0)
+    return <p className="empty-cart">Tu carrito está vacío 😢</p>;
+
+  const handlePay = () => {
+    navigate("/pago");
+  };
 
   return (
     <div className="cart-container">
-      <h2 className="cart-title">Tu Carrito</h2>
+      <h2>Mi Carrito</h2>
 
-      {cart.length === 0 ? (
-        <p className="cart-empty">Tu carrito está vacío 🛒</p>
-      ) : (
-        <div>
-          {cart.map((item) => (
-            <div className="cart-item" key={item.id}>
-              <img src={item.imagen} alt={item.nombre} className="cart-img" />
+      {cart.map((item) => (
+        <div key={item._id} className="cart-item">
+          <img
+            src={item.imagen || "/placeholder.jpg"}
+            alt={item.nombre}
+            className="cart-img"
+          />
 
-              <div className="cart-info">
-                <h3>{item.nombre}</h3>
-                <p>${item.precio}</p>
+          <div className="cart-info">
+            <h3>{item.nombre}</h3>
+            <p>${item.precio}</p>
 
-                <div className="cart-controls">
-                  <button
-                    className="qty-btn qty-minus"
-                    onClick={() => decreaseQty(item.id)}
-                  >
-                    &#8722;
-                  </button>
-
-                  <span className="cart-qty">{item.quantity}</span>
-
-                  <button
-                    className="qty-btn qty-plus"
-                    onClick={() => increaseQty(item.id)}
-                  >
-                    &#43;
-                  </button>
-                </div>
-
-                <button
-                  className="remove-btn"
-                  onClick={() => removeFromCart(item.id)}
-                >
-                  Quitar
-                </button>
-              </div>
+            <div className="cart-controls">
+              <button className="qty-btn" onClick={() => decreaseQty(item._id)}>
+                -
+              </button>
+              <span className="cart-qty">{item.quantity}</span>
+              <button className="qty-btn" onClick={() => increaseQty(item._id)}>
+                +
+              </button>
             </div>
-          ))}
 
-          <div className="cart-total">
-            <h3>Total: ${total}</h3>
+            <button
+              className="remove-btn"
+              onClick={() => removeFromCart(item._id)}
+            >
+              Quitar
+            </button>
           </div>
-
-          {/* BOTÓN DE PAGO */}
-          <button className="btn-pay-now" onClick={() => navigate("/pago")}>
-            Proceder al Pago 💳
-          </button>
         </div>
-      )}
+      ))}
+
+      <div className="cart-total">Total: ${total}</div>
+
+      <button className="btn-pay-now" onClick={handlePay}>
+        Pagar ahora
+      </button>
     </div>
   );
-}
+};
+
+export default Cart;

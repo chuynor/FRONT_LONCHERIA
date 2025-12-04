@@ -4,9 +4,58 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext.jsx"; // Asegúrate de tener CartContext
 import "./PaymentPage.css";
 
+const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+const APP_TOKEN = import.meta.env.VITE_APP_TOKEN || "";
+
+const getAuthHeaders = (needsAuth = false) => {
+  const headers = {
+    "Content-Type": "application/json",
+    "x-app-token": APP_TOKEN,
+  };
+
+  if (needsAuth) {
+    const stored = localStorage.getItem("usuario") || localStorage.getItem("user") || "{}";
+    let user = {};
+    try { user = JSON.parse(stored); } catch { user = {}; }
+    const token = user?.token || user?.accessToken || localStorage.getItem("token");
+    if (token) {
+      headers["authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  return headers;
+};
+
+async function apiFetch(path, opts = {}, needsAuth = false) {
+  const url = `${API_BASE}${path}`;
+  const headers = getAuthHeaders(needsAuth);
+
+  const init = {
+    ...opts,
+    headers: { ...(opts.headers || {}), ...headers },
+  };
+
+  const res = await fetch(url, init);
+  const text = await res.text();
+  let json = null;
+  try {
+    json = text ? JSON.parse(text) : null;
+  } catch {
+    json = null;
+  }
+
+  if (!res.ok) {
+    const err = new Error(json?.mensaje || text || `HTTP ${res.status}`);
+    err.status = res.status;
+    err.body = json;
+    throw err;
+  }
+  return json;
+}
+
 export default function PaymentPage() {
   const navigate = useNavigate();
-  const { cart, total } = useCart();
+  const { cart, total, clearCart } = useCart();
 
   const [method, setMethod] = useState("card"); // tarjeta por defecto
   const [loading, setLoading] = useState(false);
@@ -26,7 +75,35 @@ export default function PaymentPage() {
     return yy > minYear || (yy === minYear && mm >= minMonth);
   };
 
-  const handlePay = (e) => {
+  // Función para descontar stock de cada producto vendido
+  const descontarStockProductos = async () => {
+    try {
+      // Intentar descontar stock para cada producto en el carrito
+      for (const item of cart) {
+        try {
+          // Si el producto tiene _id (viene de la API), usamos ese endpoint
+          if (item._id) {
+            await apiFetch(
+              `/api/productos/${item._id}/vender`,
+              {
+                method: "POST",
+                body: JSON.stringify({ cantidad: item.quantity }),
+              },
+              true // needsAuth
+            );
+          }
+        } catch (err) {
+          // Log pero no detener el proceso de compra - podría ser producto local
+          console.log(`No se pudo descontar stock para ${item.nombre}:`, err.message);
+        }
+      }
+    } catch (err) {
+      console.error("Error descuantando stock:", err);
+      // No lanzar error, permitir que la compra continúe
+    }
+  };
+
+  const handlePay = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -54,6 +131,9 @@ export default function PaymentPage() {
       }
     }
 
+    // Descontar stock antes de guardar el pedido
+    await descontarStockProductos();
+
     // Guardamos el pedido en localStorage
     const userData = JSON.parse(localStorage.getItem("userData")) || {};
     const nuevosPedidos = [
@@ -64,6 +144,9 @@ export default function PaymentPage() {
       "userData",
       JSON.stringify({ ...userData, pedidos: nuevosPedidos })
     );
+
+    // Limpiar carrito después de procesar la compra
+    clearCart();
 
     setTimeout(() => {
       setLoading(false);
